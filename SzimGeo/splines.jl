@@ -39,3 +39,22 @@ function CurveEP(p1,p2,t1,t2;norm=false)
     end
 end
 =#
+
+#Hermite interpolation
+F0(t)=2*t^3-3*t^2+1
+G0(t)=t^3-2*t^2+t
+F1(t)=-2*t^3+3*t^2
+G1(t)=t^3-t^2
+
+function HermitInterpolate(es,x)
+    if x>=0 && x<=1
+        return es.pA*F0(x)+es.tA*G0(x)+es.pB*F1(x)+es.tB*G1(x)
+    else
+        error("Hermit interpolation is only valid in the range of [0,1]")
+    end
+end
+
+function HermitInterpolate(epoint,x::Array)
+    retval = map(tuple, HermitInterpolate(epoint,curr) for (_,curr) in enumerate(x))
+    return ret
+end
