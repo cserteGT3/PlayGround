@@ -11,9 +11,6 @@ struct CurveEP
         if length(p1)>3 && length(p1)<2
             error("Dimensions below 2 and over 3 can not be used.")
         end
-        if abs(1-norm(t1)) > eps() || abs(1-norm(t2)) > eps()
-            error("Tangents are not normed.")
-        end
         if size(p1)[1]==1
             p11=vec(p1)
             p22=vec(p2)
@@ -27,18 +24,6 @@ struct CurveEP
     end
 end
 Base.show(io::IO,c::CurveEP) = print(io,"Curve endpoint:\npA=$(c.pA)\tpB=$(c.pB)\ntA=$(c.tA)\ttB=$(c.tB)")
-
-#=
-function CurveEP(p1,p2,t1,t2;norm=false)
-    if norm
-        t11=normalize(t1)
-        t22=normalize(t2)
-        CurveEP(p1,p2,t11,t22)
-    else
-        CurveEP(p1,p2,t1,t2)
-    end
-end
-=#
 
 #Hermite interpolation
 F0(t)=2*t^3-3*t^2+1
