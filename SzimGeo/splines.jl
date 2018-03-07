@@ -40,6 +40,12 @@ function HermitInterpolate(es,x)
 end
 
 function HermitInterpolate(epoint,x::Array)
-    retval = map(tuple, HermitInterpolate(epoint,curr) for (_,curr) in enumerate(x))
-    return ret
+    retx=zeros(Float64,size(x,1))
+    rety=zeros(Float64,size(x,1))
+    for (i,curr) in enumerate(x)
+        temp=HermitInterpolate(epoint,curr)
+        retx[i]=temp[1]
+        rety[i]=temp[2]
+    end
+    return retx,rety
 end
