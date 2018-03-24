@@ -1,3 +1,8 @@
+# Copyright
+
+Made by Peter Salvi
+More info: https://bitbucket.org/salvipeter/sample-framework
+
 # Usage
 
 Pressing `h` displays a help window that contains all the necessary information.
