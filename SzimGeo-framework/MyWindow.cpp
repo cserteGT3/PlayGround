@@ -18,6 +18,7 @@ MyWindow::MyWindow(QApplication *parent) :
   connect(viewer, SIGNAL(startComputation(QString)), this, SLOT(startComputation(QString)));
   connect(viewer, SIGNAL(midComputation(int)), this, SLOT(midComputation(int)));
   connect(viewer, SIGNAL(endComputation()), this, SLOT(endComputation()));
+  connect(viewer, SIGNAL(showResult(QString)), this, SLOT(showResult(QString)));
   setCentralWidget(viewer);
 
   /////////////////////////
@@ -169,4 +170,20 @@ void MyWindow::midComputation(int percent) {
 void MyWindow::endComputation() {
   progress->hide();
   statusBar()->clearMessage();
+}
+
+void MyWindow::showResult(QString msg) {
+    auto dlg = std::make_unique<QDialog>(this);
+    auto *vertl = new QVBoxLayout;
+    auto *text = new QLabel(msg);
+    auto *ok = new QPushButton(tr("Thank you!"));
+    connect(ok, SIGNAL(pressed()), dlg.get(), SLOT(accept()));
+    ok->setDefault(true);
+    vertl->addWidget(text);
+    vertl->addWidget(ok);
+    dlg->setWindowTitle(tr("Results"));
+    dlg->setLayout(vertl);
+    if(dlg->exec() == QDialog::Accepted){
+        viewer->update();
+    }
 }

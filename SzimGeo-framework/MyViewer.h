@@ -5,6 +5,7 @@
 
 #include <QGLViewer/qglviewer.h>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+#include <QtMath>
 
 using qglviewer::Vec;
 
@@ -28,6 +29,7 @@ signals:
   void startComputation(QString message);
   void midComputation(int percent);
   void endComputation();
+  void showResult(QString msg);
 
 protected:
   virtual void init() override;
@@ -71,6 +73,11 @@ private:
 
   // Other
   void fairMesh();
+
+  // Homework URLGNI
+  void searchOrigo();
+  inline double distanceOrigo(MyMesh::VertexIter vert);
+  inline bool meshIsEmpty();
 
   //////////////////////
   // Member variables //

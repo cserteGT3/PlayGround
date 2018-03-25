@@ -22,6 +22,7 @@ private slots:
   void startComputation(QString message);
   void midComputation(int percent);
   void endComputation();
+  void showResult(QString msg);
 
 private:
   QApplication *parent;

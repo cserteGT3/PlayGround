@@ -542,6 +542,9 @@ void MyViewer::keyPressEvent(QKeyEvent *e) {
       fairMesh();
       update();
       break;
+     case Qt::Key_X:
+      searchOrigo();
+      break;
     default:
       QGLViewer::keyPressEvent(e);
     }
@@ -661,4 +664,29 @@ QString MyViewer::helpString() const {
                "Feel free to modify and explore!</p>"
                "<p align=\"right\">Peter Salvi</p>");
   return text;
+}
+
+void MyViewer::searchOrigo() {
+    if (!meshIsEmpty())
+    {
+        MyMesh::VertexIter v_it,v_end(mesh.vertices_end());
+        MyMesh::VertexIter nearest=mesh.vertices_begin();
+        double lDist = distanceOrigo(nearest);
+        for (v_it=mesh.vertices_begin(); v_it!=v_end; ++v_it)
+        {
+            //Current distance
+            double cd = distanceOrigo(v_it);
+            //If cd is smaller than any previous, then it is saved
+            if (cd < lDist)
+            {
+                lDist = cd;
+                nearest = v_it;
+            }
+        }
+        emit showResult(tr("something meaningful"));
+    }
+    else
+    {
+        emit showResult(tr("Please open a file."));
+    }
 }
