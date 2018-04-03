@@ -686,8 +686,10 @@ void MyViewer::searchOrigo() {
         //nearest: the nearest vertex to origo
 
         //is the nearest on boundary of the mesh?
-        bool isBound = is_boundary(nearest);
+        bool isBound = MyMesh::is_boundary(nearest);
+
         /*
+         * Copied somewhere from the internet
         MyMesh::VertexFaceIter vflt, vfBegin;
         vfBegin = mesh.vf_iter(nearest);
         glColor3d(1.0, 0.0, 0.0);
@@ -704,6 +706,16 @@ void MyViewer::searchOrigo() {
         }
         update();
         */
+
+        //Using openmesh documentation
+
+        MyMesh::VertexHandle nHandle = MyMesh::handle(nearest);
+        glColor3d(1.0, 0.0, 0.0);
+        for (MyMesh::VertexFaceIter vf_it = mesh.vf_iter(nHandle); vf_it; ++vf_it)
+        {
+            emit showResult(tr("in da house"));
+        }
+
         emit showResult(tr("something meaningful"));
     }
     else
