@@ -9,6 +9,7 @@
 
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Tools/Smoother/JacobiLaplaceSmootherT.hh>
+#include <OpenMesh/Core/Mesh/IteratorsT.hh>
 
 // #define BETTER_MEAN_CURVATURE
 
@@ -686,7 +687,7 @@ void MyViewer::searchOrigo() {
         //nearest: the nearest vertex to origo
 
         //is the nearest on boundary of the mesh?
-        bool isBound = MyMesh::is_boundary(nearest);
+        //bool isBound = MyMesh::is_boundary(nearest);
 
         /*
          * Copied somewhere from the internet
@@ -709,13 +710,20 @@ void MyViewer::searchOrigo() {
 
         //Using openmesh documentation
 
-        MyMesh::VertexHandle nHandle = MyMesh::handle(nearest);
+        //MyMesh::VertexHandle nHandle = MyMesh::handle(nearest);
         glColor3d(1.0, 0.0, 0.0);
-        for (MyMesh::VertexFaceIter vf_it = mesh.vf_iter(nHandle); vf_it; ++vf_it)
+        for (MyMesh::VertexFaceIter vf_it = mesh.vf_iter(*nearest); vf_it.is_valid(); ++vf_it)
         {
-            emit showResult(tr("in da house"));
+            //emit showResult(tr("in da house"));
+            glBegin(GL_POLYGON);
+            for (auto v : mesh.fv_range(*vf_it))
+            {
+                glNormal3dv(mesh.normal(v).data());
+                glVertex3dv(mesh.point(v).data());
+            }
+            glEnd();
         }
-
+        update();
         emit showResult(tr("something meaningful"));
     }
     else
