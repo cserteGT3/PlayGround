@@ -683,6 +683,27 @@ void MyViewer::searchOrigo() {
                 nearest = v_it;
             }
         }
+        //nearest: the nearest vertex to origo
+
+        //is the nearest on boundary of the mesh?
+        bool isBound = is_boundary(nearest);
+        /*
+        MyMesh::VertexFaceIter vflt, vfBegin;
+        vfBegin = mesh.vf_iter(nearest);
+        glColor3d(1.0, 0.0, 0.0);
+        for (vflt = vfBegin; vflt; ++vflt)
+        {
+            emit showResult(tr("in da house"));
+            glBegin(GL_POLYGON);
+            for (auto v : mesh.fv_range(vflt))
+            {
+                glNormal3dv(mesh.normal(v).data());
+                glVertex3dv(mesh.point(v).data());
+            }
+            glEnd();
+        }
+        update();
+        */
         emit showResult(tr("something meaningful"));
     }
     else
