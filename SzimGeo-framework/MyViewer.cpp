@@ -573,13 +573,16 @@ void MyViewer::keyPressEvent(QKeyEvent *e) {
       if (!is_empty)
       {
         show_nearest = !show_nearest;
-        searchOrigo();
-        update();
+        if (show_nearest)
+        {
+            searchOrigo();
+        }
       }
       else
       {
          emit showResult(tr("Please open a file."));
       }
+      update();
       break;
     default:
       QGLViewer::keyPressEvent(e);
@@ -717,11 +720,23 @@ void MyViewer::searchOrigo() {
                 nearest = v_it;
             }
         }
+        //Empty the list of faces around the nearest vertex
         near_faces.clear();
+        //Add all faces to the list, which are connecting to the nearest vertex
         for (MyMesh::VertexFaceIter vf_it = mesh.vf_iter(*nearest); vf_it.is_valid(); ++vf_it)
         {
-            //emit showResult(tr("in da house"));
             near_faces.append(vf_it);
         }
-        //emit showResult(tr("something meaningful"));
+
+        //Calculate the sum of the edge length
+        //MyMesh::VertexHandle vhandle = MyMesh.VertexIter.handle(nearest);
+        //Iterating over all outgoing edges
+        double edgelengths=0.0;
+        for (MyMesh::VertexOHalfedgeIter voh_it = mesh.voh_iter(nearest.handle()); voh_it.is_valid(); ++voh_it)
+        {
+            edgelengths += mesh.calc_edge_length(voh_it.handle());
+        }
+        QString els_str = QString::number(edgelengths);
+        QString res = tr("The sum of the edges going in to the vertex: ")+els_str;
+        emit showResult(res);
 }

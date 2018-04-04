@@ -5,8 +5,8 @@
 
 #include <QGLViewer/qglviewer.h>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
-#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
-//#include <OpenMesh/Doc/Concepts/MeshKernel.hh>
+#include <OpenMesh/Core/Mesh/TriConnectivity.hh>
+#include <OpenMesh/Core/Mesh/TriMeshT.hh>
 #include <QtMath>
 
 using qglviewer::Vec;
