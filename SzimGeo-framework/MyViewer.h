@@ -32,6 +32,7 @@ signals:
   void midComputation(int percent);
   void endComputation();
   void showResult(QString msg);
+  void showWarning(QString msg);
 
 protected:
   virtual void init() override;

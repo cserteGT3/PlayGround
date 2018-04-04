@@ -580,7 +580,7 @@ void MyViewer::keyPressEvent(QKeyEvent *e) {
       }
       else
       {
-         emit showResult(tr("Please open a file."));
+         emit showWarning(tr("Please open a file."));
       }
       update();
       break;

@@ -19,6 +19,7 @@ MyWindow::MyWindow(QApplication *parent) :
   connect(viewer, SIGNAL(midComputation(int)), this, SLOT(midComputation(int)));
   connect(viewer, SIGNAL(endComputation()), this, SLOT(endComputation()));
   connect(viewer, SIGNAL(showResult(QString)), this, SLOT(showResult(QString)));
+  connect(viewer, SIGNAL(showWarning(QString)), this, SLOT(showWarning(QString)));
   setCentralWidget(viewer);
 
   /////////////////////////
@@ -182,6 +183,22 @@ void MyWindow::showResult(QString msg) {
     vertl->addWidget(text);
     vertl->addWidget(ok);
     dlg->setWindowTitle(tr("Results"));
+    dlg->setLayout(vertl);
+    if(dlg->exec() == QDialog::Accepted){
+        viewer->update();
+    }
+}
+
+void MyWindow::showWarning(QString msg) {
+    auto dlg = std::make_unique<QDialog>(this);
+    auto *vertl = new QVBoxLayout;
+    auto *text = new QLabel(msg);
+    auto *ok = new QPushButton(tr("Sad panda is sad!"));
+    connect(ok, SIGNAL(pressed()), dlg.get(), SLOT(accept()));
+    ok->setDefault(true);
+    vertl->addWidget(text);
+    vertl->addWidget(ok);
+    dlg->setWindowTitle(tr("Warning"));
     dlg->setLayout(vertl);
     if(dlg->exec() == QDialog::Accepted){
         viewer->update();
