@@ -30,7 +30,7 @@
 MyViewer::MyViewer(QWidget *parent) :
   QGLViewer(parent), model_type(ModelType::NONE),
   mean_min(0.0), mean_max(0.0), cutoff_ratio(0.05),
-  show_control_points(true), show_solid(true), show_wireframe(false), show_nearest(false),
+  show_nearest(false), show_control_points(true), show_solid(true), show_wireframe(false),
   visualization(Visualization::PLAIN)
 {
   setSelectRegionWidth(10);
@@ -312,12 +312,14 @@ bool MyViewer::openMesh(const std::string &filename) {
   if (!OpenMesh::IO::read_mesh(mesh, filename) || mesh.n_vertices() == 0)
     return false;
   model_type = ModelType::MESH;
+  show_nearest = false;
   updateMesh();
   setupCamera();
   return true;
 }
 
 bool MyViewer::openBezier(const std::string &filename) {
+  show_nearest = false;
   size_t n, m;
   try {
     std::ifstream f(filename.c_str());
@@ -356,7 +358,9 @@ void MyViewer::draw() {
   glPolygonMode(GL_FRONT_AND_BACK, !show_solid && show_wireframe ? GL_LINE : GL_FILL);
   glEnable(GL_POLYGON_OFFSET_FILL);
   glPolygonOffset(1, 1);
-
+  QList<MyMesh::VertexFaceIter> n_faces = near_faces;
+  bool s_face = false;
+  int c_face;
   if (show_solid || show_wireframe) {
     if (visualization == Visualization::PLAIN)
       glColor3d(1.0, 1.0, 1.0);
@@ -371,14 +375,35 @@ void MyViewer::draw() {
     }
     for (auto f : mesh.faces()) {
       glBegin(GL_POLYGON);
+      if (show_nearest){
+          for (int i=0; i<n_faces.count(); i++)
+          {
+              if (*n_faces[i] == f)
+              {
+                  c_face = i;
+                  s_face = !s_face;
+                  //emit showResult(tr("bingo"));
+                  //set color
+                  glColor3d(1.0, 0.0, 0.0);
+              }
+          }
+      }
       for (auto v : mesh.fv_range(f)) {
         if (visualization == Visualization::MEAN)
           glColor3dv(meanMapColor(mesh.data(v).mean));
+
         glNormal3dv(mesh.normal(v).data());
         glVertex3dv(mesh.point(v).data());
-      }
+
+      }//end of vertex iterator
       glEnd();
-    }
+      if (s_face)
+      {
+          n_faces.removeAt(c_face);
+          s_face = !s_face;
+          glColor3d(1.0, 1.0, 1.0);
+      }
+    }//end of face iterator
     if (visualization == Visualization::ISOPHOTES) {
       glDisable(GL_TEXTURE_GEN_S);
       glDisable(GL_TEXTURE_GEN_T);
@@ -544,9 +569,17 @@ void MyViewer::keyPressEvent(QKeyEvent *e) {
       update();
       break;
      case Qt::Key_X:
-      show_nearest = !show_nearest;
-      searchOrigo();
-      update();
+      is_empty = meshIsEmpty();
+      if (!is_empty)
+      {
+        show_nearest = !show_nearest;
+        searchOrigo();
+        update();
+      }
+      else
+      {
+         emit showResult(tr("Please open a file."));
+      }
       break;
     default:
       QGLViewer::keyPressEvent(e);
@@ -670,8 +703,6 @@ QString MyViewer::helpString() const {
 }
 
 void MyViewer::searchOrigo() {
-    if (!meshIsEmpty())
-    {
         MyMesh::VertexIter v_it,v_end(mesh.vertices_end());
         MyMesh::VertexIter nearest=mesh.vertices_begin();
         double lDist = distanceOrigo(nearest);
@@ -686,32 +717,11 @@ void MyViewer::searchOrigo() {
                 nearest = v_it;
             }
         }
-        //nearest: the nearest vertex to origo
-
-        //is the nearest on boundary of the mesh?
-        //bool isBound = MyMesh::is_boundary(nearest);
-
-        //Using openmesh documentation
-
-        //MyMesh::VertexHandle nHandle = MyMesh::handle(nearest);
+        near_faces.clear();
         for (MyMesh::VertexFaceIter vf_it = mesh.vf_iter(*nearest); vf_it.is_valid(); ++vf_it)
         {
-            emit showResult(tr("in da house"));
+            //emit showResult(tr("in da house"));
             near_faces.append(vf_it);
-            /*
-            glBegin(GL_POLYGON);
-            for (auto v : mesh.fv_range(*vf_it))
-            {
-                glNormal3dv(mesh.normal(v).data());
-                glVertex3dv(mesh.point(v).data());
-            }
-            glEnd();*/
         }
-        update();
-        emit showResult(tr("something meaningful"));
-    }
-    else
-    {
-        emit showResult(tr("Please open a file."));
-    }
+        //emit showResult(tr("something meaningful"));
 }
