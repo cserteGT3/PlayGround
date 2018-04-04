@@ -30,7 +30,7 @@
 MyViewer::MyViewer(QWidget *parent) :
   QGLViewer(parent), model_type(ModelType::NONE),
   mean_min(0.0), mean_max(0.0), cutoff_ratio(0.05),
-  show_control_points(true), show_solid(true), show_wireframe(false),
+  show_control_points(true), show_solid(true), show_wireframe(false), show_nearest(false),
   visualization(Visualization::PLAIN)
 {
   setSelectRegionWidth(10);
@@ -544,7 +544,9 @@ void MyViewer::keyPressEvent(QKeyEvent *e) {
       update();
       break;
      case Qt::Key_X:
+      show_nearest = !show_nearest;
       searchOrigo();
+      update();
       break;
     default:
       QGLViewer::keyPressEvent(e);
@@ -689,39 +691,21 @@ void MyViewer::searchOrigo() {
         //is the nearest on boundary of the mesh?
         //bool isBound = MyMesh::is_boundary(nearest);
 
-        /*
-         * Copied somewhere from the internet
-        MyMesh::VertexFaceIter vflt, vfBegin;
-        vfBegin = mesh.vf_iter(nearest);
-        glColor3d(1.0, 0.0, 0.0);
-        for (vflt = vfBegin; vflt; ++vflt)
-        {
-            emit showResult(tr("in da house"));
-            glBegin(GL_POLYGON);
-            for (auto v : mesh.fv_range(vflt))
-            {
-                glNormal3dv(mesh.normal(v).data());
-                glVertex3dv(mesh.point(v).data());
-            }
-            glEnd();
-        }
-        update();
-        */
-
         //Using openmesh documentation
 
         //MyMesh::VertexHandle nHandle = MyMesh::handle(nearest);
-        glColor3d(1.0, 0.0, 0.0);
         for (MyMesh::VertexFaceIter vf_it = mesh.vf_iter(*nearest); vf_it.is_valid(); ++vf_it)
         {
-            //emit showResult(tr("in da house"));
+            emit showResult(tr("in da house"));
+            near_faces.append(vf_it);
+            /*
             glBegin(GL_POLYGON);
             for (auto v : mesh.fv_range(*vf_it))
             {
                 glNormal3dv(mesh.normal(v).data());
                 glVertex3dv(mesh.point(v).data());
             }
-            glEnd();
+            glEnd();*/
         }
         update();
         emit showResult(tr("something meaningful"));

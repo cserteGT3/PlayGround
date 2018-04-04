@@ -80,7 +80,8 @@ private:
   void searchOrigo();
   inline double distanceOrigo(MyMesh::VertexIter vert);
   inline bool meshIsEmpty();
-
+  bool show_nearest;
+  QList<MyMesh::VertexFaceIter> near_faces;
   //////////////////////
   // Member variables //
   //////////////////////
