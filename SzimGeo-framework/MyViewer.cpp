@@ -382,8 +382,6 @@ void MyViewer::draw() {
               {
                   c_face = i;
                   s_face = !s_face;
-                  //emit showResult(tr("bingo"));
-                  //set color
                   glColor3d(1.0, 0.0, 0.0);
               }
           }
@@ -395,7 +393,7 @@ void MyViewer::draw() {
         glNormal3dv(mesh.normal(v).data());
         glVertex3dv(mesh.point(v).data());
 
-      }//end of vertex iterator
+      }
       glEnd();
       if (s_face)
       {
@@ -403,7 +401,7 @@ void MyViewer::draw() {
           s_face = !s_face;
           glColor3d(1.0, 1.0, 1.0);
       }
-    }//end of face iterator
+    }
     if (visualization == Visualization::ISOPHOTES) {
       glDisable(GL_TEXTURE_GEN_S);
       glDisable(GL_TEXTURE_GEN_T);
