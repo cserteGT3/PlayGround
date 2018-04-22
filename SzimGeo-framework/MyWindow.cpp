@@ -213,23 +213,34 @@ void MyWindow::showWarning(QString msg) {
 }
 
 void MyWindow::saveFile() {
-  auto filename =
-    QFileDialog::getSaveFileName(this, tr("Save File"), last_directory,
-                                 tr("Bézier surface (*.bzr);;"
-                                    "All files (*.*)"));
-  if(filename.isEmpty())
-    return;
-  last_directory = QFileInfo(filename).absolutePath();
+    bool nogo = viewer->meshIsEmpty();
+    if ( nogo )
+    {
+        showWarning(tr("Open a file before saving it!"));
+    }else if ( viewer->model_type != viewer->ModelType::BEZIER_SURFACE )
+    {
+        showWarning(tr("Only Bézier surfaces can be saved!"));
+    }
+    else
+    {
+      auto filename =
+        QFileDialog::getSaveFileName(this, tr("Save File"), last_directory,
+                                     tr("Bézier surface (*.bzr);;"
+                                        "All files (*.*)"));
+      if(filename.isEmpty())
+        return;
+      last_directory = QFileInfo(filename).absolutePath();
 
-  bool ok = true;
-  if (filename.endsWith(".bzr"))
-    //ok = viewer->openBezier(filename.toUtf8().data());
-    showResult(filename);
-  else
-      QMessageBox::warning(this, tr("Can not save file."),
-                           tr("File name must end: *.bzr"));
+      bool ok = true;
+      if (filename.endsWith(".bzr"))
+        //ok = viewer->saveBezier(filename.toUtf8().data());
+          ok = viewer->saveBezier(filename);
+      else
+          QMessageBox::warning(this, tr("Can not save file."),
+                               tr("File name must end: *.bzr"));
 
-  if (!ok)
-    QMessageBox::warning(this, tr("Cannot open file"),
-                         tr("Could not open file: ") + filename + ".");
+      if (!ok)
+        QMessageBox::warning(this, tr("Can not save file"),
+                             tr("Could not save file: ") + filename + ".");
+    }
 }
