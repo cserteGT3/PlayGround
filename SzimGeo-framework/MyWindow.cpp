@@ -44,9 +44,16 @@ MyWindow::MyWindow(QApplication *parent) :
   rangeAction->setStatusTip(tr("Set mean map range"));
   connect(rangeAction, SIGNAL(triggered()), this, SLOT(setRange()));
 
+  auto saveAction = new QAction(tr("&Save"), this);
+  saveAction->setShortcut(tr("Ctrl+B"));
+  saveAction->setStatusTip(tr("Save bézier surface."));
+  connect(saveAction, SIGNAL(triggered()), this, SLOT(saveFile()));
+
   auto fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(openAction);
+  fileMenu->addAction(saveAction);
   fileMenu->addAction(quitAction);
+
 
   auto visMenu = menuBar()->addMenu(tr("&Visualization"));
   visMenu->addAction(cutoffAction);
@@ -203,4 +210,26 @@ void MyWindow::showWarning(QString msg) {
     if(dlg->exec() == QDialog::Accepted){
         viewer->update();
     }
+}
+
+void MyWindow::saveFile() {
+  auto filename =
+    QFileDialog::getSaveFileName(this, tr("Save File"), last_directory,
+                                 tr("Bézier surface (*.bzr);;"
+                                    "All files (*.*)"));
+  if(filename.isEmpty())
+    return;
+  last_directory = QFileInfo(filename).absolutePath();
+
+  bool ok = true;
+  if (filename.endsWith(".bzr"))
+    //ok = viewer->openBezier(filename.toUtf8().data());
+    showResult(filename);
+  else
+      QMessageBox::warning(this, tr("Can not save file."),
+                           tr("File name must end: *.bzr"));
+
+  if (!ok)
+    QMessageBox::warning(this, tr("Cannot open file"),
+                         tr("Could not open file: ") + filename + ".");
 }

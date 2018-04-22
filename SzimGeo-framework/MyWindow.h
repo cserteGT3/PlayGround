@@ -17,6 +17,7 @@ public:
 
 private slots:
   void open();
+  void saveFile();
   void setCutoff();
   void setRange();
   void startComputation(QString message);
