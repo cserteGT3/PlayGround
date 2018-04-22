@@ -32,17 +32,7 @@ double MyViewer::distanceOrigo(MyMesh::VertexIter vert) {
 
 //Returns false if there's no vertice in mesh, true otherwise
 bool MyViewer::meshIsEmpty() {
-    MyMesh::VertexIter v_it,v_end(mesh.vertices_end());
-    int numb = 0;
-    bool empty = true;
-    for (v_it=mesh.vertices_begin(); v_it!=v_end; ++v_it)
-    {
-        ++numb;
-        if (numb > 0)
-        {
-            empty = false;
-            break;
-        }
-    }
-    return empty;
+    if( mesh.n_vertices() == 0)
+        return true;
+    return false;
 }
