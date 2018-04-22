@@ -738,3 +738,23 @@ void MyViewer::searchOrigo() {
         QString res = tr("The sum of the edges going in to the vertex: ")+els_str;
         emit showResult(res);
 }
+
+bool MyViewer::saveBezier(QString filename) {
+    QFile ofile(filename);
+    ofile.open(QIODevice::WriteOnly);
+    if (!ofile.isOpen())
+    {
+        emit showWarning(tr("File could not opened."));
+        return false;
+    }
+    QTextStream oStream(&ofile);
+    size_t n,m;
+    n = degree[0]+1;
+    m = degree[1]+1;
+    oStream << degree[0] <<" " << degree[1]<<endl;
+    for (size_t i = 0, index = 0; i < n; ++i)
+      for (size_t j = 0; j < m; ++j, ++index)
+        oStream << control_points[index][0] <<" "<< control_points[index][1] <<" "<< control_points[index][2]<<endl;
+    ofile.close();
+    return true;
+}

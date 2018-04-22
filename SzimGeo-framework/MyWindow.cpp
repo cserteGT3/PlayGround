@@ -66,9 +66,10 @@ MyWindow::~MyWindow() {
 void MyWindow::open() {
   auto filename =
     QFileDialog::getOpenFileName(this, tr("Open File"), last_directory,
-                                 tr("Mesh (*.obj *.ply *.stl);;"
-                                    "Bézier surface (*.bzr);;"
-                                    "All files (*.*)"));
+                                 tr("All files (*.*);;"
+                                     "Mesh (*.obj *.ply *.stl);;"
+                                    "Bézier surface (*.bzr)"
+                                    ));
   if(filename.isEmpty())
     return;
   last_directory = QFileInfo(filename).absolutePath();

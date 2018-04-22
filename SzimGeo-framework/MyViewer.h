@@ -8,6 +8,7 @@
 #include <OpenMesh/Core/Mesh/TriConnectivity.hh>
 #include <OpenMesh/Core/Mesh/TriMeshT.hh>
 #include <QtMath>
+#include <QTextStream>
 
 using qglviewer::Vec;
 
@@ -26,6 +27,9 @@ public:
   inline void setMeanMax(double max);
   bool openMesh(const std::string &filename);
   bool openBezier(const std::string &filename);
+  bool saveBezier(QString filename);
+  enum class ModelType { NONE, MESH, BEZIER_SURFACE } model_type;
+  inline bool meshIsEmpty();
 
 signals:
   void startComputation(QString message);
@@ -80,14 +84,11 @@ private:
   // Homework URLGNI
   void searchOrigo();
   inline double distanceOrigo(MyMesh::VertexIter vert);
-  inline bool meshIsEmpty();
   bool show_nearest, is_empty;
   QList<MyMesh::VertexFaceIter> near_faces;
   //////////////////////
   // Member variables //
   //////////////////////
-
-  enum class ModelType { NONE, MESH, BEZIER_SURFACE } model_type;
 
   // Mesh
   MyMesh mesh;
