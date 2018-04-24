@@ -582,6 +582,11 @@ void MyViewer::keyPressEvent(QKeyEvent *e) {
       }
       update();
       break;
+    case Qt::Key_E:
+        elevateDegree();
+        updateMesh();
+        update();
+        break;
     default:
       QGLViewer::keyPressEvent(e);
     }
@@ -757,4 +762,96 @@ bool MyViewer::saveBezier(QString filename) {
         oStream << control_points[index][0] <<" "<< control_points[index][1] <<" "<< control_points[index][2]<<endl;
     ofile.close();
     return true;
+}
+
+void MyViewer::elevateDegree(){
+    //Degree before elevation
+    size_t ndb = degree[0], mdb = degree[1];
+
+    //Elevating degree
+    degree[0]++;
+    degree[1]++;
+
+    //Degree after elevation (not necessary, only for comfort)
+    size_t nda = degree[0], mda = degree[1];
+
+    //Copy of the original control points is needed
+    std::vector<Vec> cL(control_points);
+
+    //Number of control points
+    int nps = degree[0]+1, mps = degree[1]+1;
+
+    //Resizing the control point array
+    control_points.resize(nps*mps);
+
+    //Iterate through all points (of the new control points)
+    for (size_t i = 0, index = 0; i < nps; ++i)
+      for (size_t j = 0; j < mps; ++j, ++index)
+      {
+          //The four corners stay the same:
+          if (index==0){control_points[0] = cL[0];}
+          else if (index==mda){control_points[index] = cL[mdb];}
+          else if (index==nda*(mda+1)){control_points[index] = cL[ndb*(mdb+1)];}
+          else if (index==(nps*mps-1)){control_points[index] = cL[(ndb+1)*(mdb+1)-1];}
+          //"baloldali él"
+          else if (index%(mda+1)==0)
+          {
+              //csak n irányba kell változtatni
+              //hányadik az íven?
+              size_t cPoA = index/(mda+1);//current Point on Arc
+              //ennyiedik ponthoz az emelés előtt melyik tömbelem tartozik
+              size_t pbE = cPoA*(mdb+1); //pointer before elevation
+              //az előző ponthoz tartozó pointer
+              size_t pbEp = pbE-(mdb+1);//pointer before elevation previous point arc
+              auto coeff_prev = cPoA/(nda);
+              control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
+          }
+          //"jobboldali él"
+          else if (index%(mda+1)==mda)
+          {
+              //csak n irányba kell változtatni
+              //hányadik az íven?
+              size_t cPoA = (index-mda)/(mda+1);//current Point on Arc
+              //ennyiedik ponthoz az emelés előtt melyik tömbelem tartozik
+              size_t pBE = cPoA*(mdb+1)+mdb;
+              //az előző pont pointere
+              size_t pbEp = pBE-(mdb+1);
+              auto coeff_prev = cPoA/(nda);
+              control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
+          }
+          //"alsó él"
+          else if (index<mda)
+          {
+              //csak m irányba kell változtatni
+              //hányadik az íven?
+              size_t cPoA = index;
+              size_t pbE = index;
+              size_t pbEp = index-1;
+              auto coeff_prev = cPoA/mda;
+              control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
+          }
+          //"felső él"
+          else if (index>(nda*(mda+1)))
+          {
+              //csak m irányba kell változtatni
+              size_t cPoA = index-(nda*(mda+1));
+              size_t pbE = ndb*(mdb+1)+index;
+              size_t pbEp = pbE-1;
+              auto coeff_prev = cPoA/mda;
+              control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
+          }
+          //"belső pontok" mindkét irányba kekk változtatni
+          else
+          {
+              //n irányú indexek és pointerek
+              size_t n_ind = index/(mda+1);
+              size_t m_ind = index%(mda+1);
+              //ennyiedik ponthoz az emelés előtt melyik tömbelem tartozik
+              size_t pBe = n_ind*(mdb+1)+m_ind;
+
+
+
+          }
+          //ide kéne rakni egy emit hol tartunkot :D
+      }
 }

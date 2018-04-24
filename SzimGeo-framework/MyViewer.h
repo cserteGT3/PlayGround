@@ -86,6 +86,7 @@ private:
   inline double distanceOrigo(MyMesh::VertexIter vert);
   bool show_nearest, is_empty;
   QList<MyMesh::VertexFaceIter> near_faces;
+  void elevateDegree();
   //////////////////////
   // Member variables //
   //////////////////////
