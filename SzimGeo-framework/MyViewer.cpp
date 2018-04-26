@@ -776,16 +776,24 @@ void MyViewer::elevateDegree(){
     size_t nda = degree[0], mda = degree[1];
 
     //Copy of the original control points is needed
-    std::vector<Vec> cL(control_points);
+    //std::vector<Vec> cL(control_points);
+    std::vector<Vec> cL;
+    cL.resize(nda*mda);
+    for (int i; i<cL.size(); ++i)
+    {
+        cL[i] = control_points[i];
+    }
 
     //Number of control points
-    int nps = degree[0]+1, mps = degree[1]+1;
+    size_t nps = degree[0]+1, mps = degree[1]+1;
 
     //Resizing the control point array
     control_points.resize(nps*mps);
 
+    emit startComputation(tr("Degree elevation process started."));
     //Iterate through all points (of the new control points)
     for (size_t i = 0, index = 0; i < nps; ++i)
+    {
       for (size_t j = 0; j < mps; ++j, ++index)
       {
           //The four corners stay the same:
@@ -817,7 +825,7 @@ void MyViewer::elevateDegree(){
               //az előző pont pointere
               size_t pbEp = pBE-(mdb+1);
               auto coeff_prev = cPoA/(nda);
-              control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
+              control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pBE];
           }
           //"alsó él"
           else if (index<mda)
@@ -847,11 +855,19 @@ void MyViewer::elevateDegree(){
               size_t n_ind = index/(mda+1);
               size_t m_ind = index%(mda+1);
               //ennyiedik ponthoz az emelés előtt melyik tömbelem tartozik
-              size_t pBe = n_ind*(mdb+1)+m_ind;
+              size_t i_c = n_ind*(mdb+1)+m_ind;//point before elevation
+              size_t i_mp = i_c-1;//m irányű previous elem
+              size_t i_mpnp = i_mp-(mdb+1);
+              size_t i_np = i_c-(mdb+1);
+              //weights of rows and columns
+              double mpw, npw;
+              mpw = m_ind/mda;
+              npw = n_ind/nda;
 
-
-
+              control_points[index] = mpw*npw*cL[i_mpnp] + npw*(1-mpw)*cL[i_np] + mpw*(1-npw)*cL[i_mp] + (1-mpw)*(1-npw)*cL[i_c];
           }
           //ide kéne rakni egy emit hol tartunkot :D
       }
+    }
+    emit endComputation();
 }
