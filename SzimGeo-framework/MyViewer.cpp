@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -776,32 +776,27 @@ void MyViewer::elevateDegree(){
     size_t nda = degree[0], mda = degree[1];
 
     //Copy of the original control points is needed
-    //std::vector<Vec> cL(control_points);
-    std::vector<Vec> cL;
-    cL.resize(nda*mda);
-    for (int i; i<cL.size(); ++i)
-    {
-        cL[i] = control_points[i];
-    }
+    std::vector<Vec> cL(control_points);
 
     //Number of control points
     size_t nps = degree[0]+1, mps = degree[1]+1;
 
+    control_points[3] = control_points[4];
     //Resizing the control point array
     control_points.resize(nps*mps);
 
-    emit startComputation(tr("Degree elevation process started."));
     //Iterate through all points (of the new control points)
-    for (size_t i = 0, index = 0; i < nps; ++i)
-    {
-      for (size_t j = 0; j < mps; ++j, ++index)
+    //for (size_t i = 0, index = 0; i < nps; ++i)
+    //{
+      //for (size_t j = 0; j < mps; ++j, ++index)
+      for (size_t index = 0; index < control_points.size(); ++index)
       {
           //The four corners stay the same:
           if (index==0){control_points[0] = cL[0];}
           else if (index==mda){control_points[index] = cL[mdb];}
           else if (index==nda*(mda+1)){control_points[index] = cL[ndb*(mdb+1)];}
-          else if (index==(nps*mps-1)){control_points[index] = cL[(ndb+1)*(mdb+1)-1];}
-          //"baloldali él"
+          else if (index==(mps*nps-1)){control_points[index] = cL[(mdb+1)*(ndb+1)-1];}
+          //"felső él"-pipa
           else if (index%(mda+1)==0)
           {
               //csak n irányba kell változtatni
@@ -811,11 +806,11 @@ void MyViewer::elevateDegree(){
               size_t pbE = cPoA*(mdb+1); //pointer before elevation
               //az előző ponthoz tartozó pointer
               size_t pbEp = pbE-(mdb+1);//pointer before elevation previous point arc
-              auto coeff_prev = cPoA/(nda);
+              auto coeff_prev = cPoA/nda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
-          //"jobboldali él"
-          else if (index%(mda+1)==mda)
+          //"alsó él"-pipa
+          else if (index%(mda+1)==nda)
           {
               //csak n irányba kell változtatni
               //hányadik az íven?
@@ -824,11 +819,11 @@ void MyViewer::elevateDegree(){
               size_t pBE = cPoA*(mdb+1)+mdb;
               //az előző pont pointere
               size_t pbEp = pBE-(mdb+1);
-              auto coeff_prev = cPoA/(nda);
+              auto coeff_prev = cPoA/nda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pBE];
           }
-          //"alsó él"
-          else if (index<mda)
+          //"baloldali él"-pipa
+          else if (index<nda)
           {
               //csak m irányba kell változtatni
               //hányadik az íven?
@@ -838,36 +833,36 @@ void MyViewer::elevateDegree(){
               auto coeff_prev = cPoA/mda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
-          //"felső él"
+          //"jobboldali él"-pipa
           else if (index>(nda*(mda+1)))
           {
               //csak m irányba kell változtatni
               size_t cPoA = index-(nda*(mda+1));
-              size_t pbE = ndb*(mdb+1)+index;
+              size_t pbE = ndb*(mdb+1)+cPoA;
               size_t pbEp = pbE-1;
               auto coeff_prev = cPoA/mda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
-          //"belső pontok" mindkét irányba kekk változtatni
-          else
+          //"belső pontok" mindkét irányba kell változtatni
+          else//-pipa
           {
               //n irányú indexek és pointerek
               size_t n_ind = index/(mda+1);
               size_t m_ind = index%(mda+1);
-              //ennyiedik ponthoz az emelés előtt melyik tömbelem tartozik
+              //emelés előtti pontok
               size_t i_c = n_ind*(mdb+1)+m_ind;//point before elevation
-              size_t i_mp = i_c-1;//m irányű previous elem
-              size_t i_mpnp = i_mp-(mdb+1);
+              size_t i_mp = i_c-1;
+              size_t i_npmp = i_mp-(mdb+1);
               size_t i_np = i_c-(mdb+1);
               //weights of rows and columns
               double mpw, npw;
-              mpw = m_ind/mda;
               npw = n_ind/nda;
+              mpw = m_ind/mda;
 
-              control_points[index] = mpw*npw*cL[i_mpnp] + npw*(1-mpw)*cL[i_np] + mpw*(1-npw)*cL[i_mp] + (1-mpw)*(1-npw)*cL[i_c];
+              control_points[index] = npw*mpw*cL[i_npmp] + mpw*(1-npw)*cL[i_mp] + npw*(1-mpw)*cL[i_np] + (1-npw)*(1-mpw)*cL[i_c];
           }
           //ide kéne rakni egy emit hol tartunkot :D
       }
-    }
-    emit endComputation();
+    //}
+      emit endComputation();
 }
