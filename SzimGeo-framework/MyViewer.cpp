@@ -781,14 +781,10 @@ void MyViewer::elevateDegree(){
     //Number of control points
     size_t nps = degree[0]+1, mps = degree[1]+1;
 
-    //control_points[3] = control_points[4];
     //Resizing the control point array
     control_points.resize(nps*mps);
 
     //Iterate through all points (of the new control points)
-    //for (size_t i = 0, index = 0; i < nps; ++i)
-    //{
-      //for (size_t j = 0; j < mps; ++j, ++index)
       for (size_t index = 0; index < control_points.size(); ++index)
       {
           //The four corners stay the same:
@@ -796,7 +792,7 @@ void MyViewer::elevateDegree(){
           else if (index==mda){control_points[index] = cL[mdb];}
           else if (index==nda*(mda+1)){control_points[index] = cL[ndb*(mdb+1)];}
           else if (index==(mps*nps-1)){control_points[index] = cL[(mdb+1)*(ndb+1)-1];}
-          //"felső él"-pipa
+          //"felső él"
           else if (index%(mda+1)==0)
           {
               //csak n irányba kell változtatni
@@ -809,7 +805,7 @@ void MyViewer::elevateDegree(){
               auto coeff_prev = cPoA/(double)nda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
-          //"alsó él"-pipa
+          //"alsó él"
           else if (index%(mda+1)==nda)
           {
               //csak n irányba kell változtatni
@@ -822,7 +818,7 @@ void MyViewer::elevateDegree(){
               auto coeff_prev = cPoA/(double)nda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pBE];
           }
-          //"baloldali él"-pipa
+          //"baloldali él"
           else if (index<nda)
           {
               //csak m irányba kell változtatni
@@ -833,7 +829,7 @@ void MyViewer::elevateDegree(){
               auto coeff_prev = cPoA/(double)mda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
-          //"jobboldali él"-pipa
+          //"jobboldali él"
           else if (index>(nda*(mda+1)))
           {
               //csak m irányba kell változtatni
@@ -844,7 +840,7 @@ void MyViewer::elevateDegree(){
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
           //"belső pontok" mindkét irányba kell változtatni
-          else//-pipa
+          else
           {
               //n irányú indexek és pointerek
               size_t n_ind = index/(mda+1);
@@ -861,37 +857,5 @@ void MyViewer::elevateDegree(){
 
               control_points[index] = npw*mpw*cL[i_npmp] + mpw*(1-npw)*cL[i_mp] + npw*(1-mpw)*cL[i_np] + (1-npw)*(1-mpw)*cL[i_c];
           }
-          //ide kéne rakni egy emit hol tartunkot :D
       }
-    //}
-      emit endComputation();
-}
-
-void MyViewer::elevateDegreeM(){
-    //Degree before elevation
-    size_t ndb = degree[0], mdb = degree[1];
-
-    //Elevating degree
-    degree[1] += 1;
-    size_t mda = degree[1];
-
-    std::vector<Vec> cL(control_points);
-
-    //Number of control points
-    size_t nps = degree[0]+1, mps = degree[1]+1;
-
-    //Resizing the control point array
-    control_points.resize(nps*mps);
-
-    for (size_t index = 0; index<control_points.size(); ++index)
-    {
-        //Hányadik az íven?
-        size_t cmI = index%(mda+1);
-        //Hányadik a merőleges íven?
-        size_t cnI = index/(mda+1);
-        double w = cmI/mda;
-        //Pointer before elevation
-        size_t pI = ndb*cnI+cmI;
-        control_points[index] = ((w*cL[pI-1]) + ((1-w)*cL[pI]));
-    }
 }
