@@ -806,7 +806,7 @@ void MyViewer::elevateDegree(){
               size_t pbE = cPoA*(mdb+1); //pointer before elevation
               //az előző ponthoz tartozó pointer
               size_t pbEp = pbE-(mdb+1);//pointer before elevation previous point arc
-              auto coeff_prev = cPoA/nda;
+              auto coeff_prev = cPoA/(double)nda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
           //"alsó él"-pipa
@@ -819,7 +819,7 @@ void MyViewer::elevateDegree(){
               size_t pBE = cPoA*(mdb+1)+mdb;
               //az előző pont pointere
               size_t pbEp = pBE-(mdb+1);
-              auto coeff_prev = cPoA/nda;
+              auto coeff_prev = cPoA/(double)nda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pBE];
           }
           //"baloldali él"-pipa
@@ -830,7 +830,7 @@ void MyViewer::elevateDegree(){
               size_t cPoA = index;
               size_t pbE = index;
               size_t pbEp = index-1;
-              auto coeff_prev = cPoA/mda;
+              auto coeff_prev = cPoA/(double)mda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
           //"jobboldali él"-pipa
@@ -840,7 +840,7 @@ void MyViewer::elevateDegree(){
               size_t cPoA = index-(nda*(mda+1));
               size_t pbE = ndb*(mdb+1)+cPoA;
               size_t pbEp = pbE-1;
-              auto coeff_prev = cPoA/mda;
+              auto coeff_prev = cPoA/(double)mda;
               control_points[index] = coeff_prev*cL[pbEp] + (1-coeff_prev)*cL[pbE];
           }
           //"belső pontok" mindkét irányba kell változtatni
@@ -856,8 +856,8 @@ void MyViewer::elevateDegree(){
               size_t i_np = i_c-(mdb+1);
               //weights of rows and columns
               double mpw, npw;
-              npw = n_ind/nda;
-              mpw = m_ind/mda;
+              npw = n_ind/(double)nda;
+              mpw = m_ind/(double)mda;
 
               control_points[index] = npw*mpw*cL[i_npmp] + mpw*(1-npw)*cL[i_mp] + npw*(1-mpw)*cL[i_np] + (1-npw)*(1-mpw)*cL[i_c];
           }
@@ -865,4 +865,33 @@ void MyViewer::elevateDegree(){
       }
     //}
       emit endComputation();
+}
+
+void MyViewer::elevateDegreeM(){
+    //Degree before elevation
+    size_t ndb = degree[0], mdb = degree[1];
+
+    //Elevating degree
+    degree[1] += 1;
+    size_t mda = degree[1];
+
+    std::vector<Vec> cL(control_points);
+
+    //Number of control points
+    size_t nps = degree[0]+1, mps = degree[1]+1;
+
+    //Resizing the control point array
+    control_points.resize(nps*mps);
+
+    for (size_t index = 0; index<control_points.size(); ++index)
+    {
+        //Hányadik az íven?
+        size_t cmI = index%(mda+1);
+        //Hányadik a merőleges íven?
+        size_t cnI = index/(mda+1);
+        double w = cmI/mda;
+        //Pointer before elevation
+        size_t pI = ndb*cnI+cmI;
+        control_points[index] = ((w*cL[pI-1]) + ((1-w)*cL[pI]));
+    }
 }
