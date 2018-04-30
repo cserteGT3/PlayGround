@@ -638,6 +638,8 @@ void MyViewer::generateMesh() {
         for (size_t l = 0; l <= m; ++l, ++index)
           p += control_points[index] * coeff_u[k] * coeff_v[l];
       handles.push_back(mesh.add_vertex(Vector(static_cast<double *>(p))));
+      mesh.data(handles.back()).vp = v;
+      mesh.data(handles.back()).up = u;
     }
   }
   for (size_t i = 0; i < resolution - 1; ++i)
@@ -858,4 +860,8 @@ void MyViewer::elevateDegree(){
               control_points[index] = npw*mpw*cL[i_npmp] + mpw*(1-npw)*cL[i_mp] + npw*(1-mpw)*cL[i_np] + (1-npw)*(1-mpw)*cL[i_c];
           }
       }
+}
+
+void MyViewer::continuesMean(){
+
 }

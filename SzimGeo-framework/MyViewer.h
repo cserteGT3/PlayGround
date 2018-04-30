@@ -53,6 +53,7 @@ private:
     using Normal = OpenMesh::Vec3d;
     VertexTraits {
       double mean;              // approximated mean curvature
+      double up,vp;             // u and v parameters
     };
   };
   using MyMesh = OpenMesh::TriMesh_ArrayKernelT<MyTraits>;
@@ -87,6 +88,7 @@ private:
   bool show_nearest, is_empty;
   QList<MyMesh::VertexFaceIter> near_faces;
   void elevateDegree();
+  void continuesMean();
   //////////////////////
   // Member variables //
   //////////////////////
