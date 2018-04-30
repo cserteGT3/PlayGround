@@ -781,7 +781,7 @@ void MyViewer::elevateDegree(){
     //Number of control points
     size_t nps = degree[0]+1, mps = degree[1]+1;
 
-    control_points[3] = control_points[4];
+    //control_points[3] = control_points[4];
     //Resizing the control point array
     control_points.resize(nps*mps);
 
