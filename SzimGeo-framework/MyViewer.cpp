@@ -288,7 +288,10 @@ void MyViewer::updateMesh(bool update_mean_range) {
   mesh.request_face_normals(); mesh.request_vertex_normals();
   mesh.update_face_normals(); //mesh.update_vertex_normals();
   updateVertexNormals();
-  updateMeanCurvature(update_mean_range);
+  if (model_type == ModelType::BEZIER_SURFACE)
+    bezierMeanCurvature(update_mean_range);
+  else
+    updateMeanCurvature(update_mean_range);
 }
 
 void MyViewer::setupCamera() {
@@ -862,6 +865,71 @@ void MyViewer::elevateDegree(){
       }
 }
 
-void MyViewer::continuesMean(){
+void MyViewer::bezierMeanCurvature(bool mmm){
+    for (auto vert : mesh.vertices())
+    {
+        //Su,Sv,Suu,Svv,Suv
+        Vec Su(0.0,0.0,0.0);
+        Vec Sv(0.0,0.0,0.0);
+        Vec Suu(0.0,0.0,0.0);
+        Vec Svv(0.0,0.0,0.0);
+        Vec Suv(0.0,0.0,0.0);
 
+        //Degrees for easier use
+        size_t nd = degree[0];
+        size_t md = degree[1];
+
+        //vertex properties
+        double u = mesh.data(vert).up;
+        double v = mesh.data(vert).vp;
+        auto snorm = mesh.normal(vert);
+        auto vsnorm = Vec(snorm[0],snorm[1],snorm[2]);
+
+        //Bernstein
+        std::vector<double> Bn, Bm, Bn1, Bm1, Bn2, Bm2;
+        bernsteinAll(nd,u,Bn);
+        bernsteinAll(nd-1,u,Bn1);
+        bernsteinAll(nd-2,u,Bn2);
+
+        bernsteinAll(md,v,Bm);
+        bernsteinAll(md-1,v,Bm1);
+        bernsteinAll(md-2,v,Bm2);
+
+        for (size_t i = 0, index = 0; i<=nd; ++i){
+            for (size_t j = 0; j<=md; ++j, ++index){
+                //indexes of control points
+                size_t ij, i1j, ij1, i2j, ij2, i1j1;
+                ij = index;
+                i1j = index+(md+1);
+                ij1 = index+1;
+                i2j = index+2*(md+1);
+                ij2 = index+2;
+                i1j1 = index+1+(md+1);
+
+                if ( i <= (nd-1) ){
+                    Su += nd*(control_points[i1j]-control_points[ij])*Bn1[i]*Bm[j];
+                    if ( i <= (nd-2) ){
+                        Suu += nd*(nd-1)*(control_points[i2j]-2*control_points[i1j]+control_points[ij])*Bn2[i]*Bm[j];
+                    }}
+                if ( j <= (md-1) ){
+                    Sv += md*(control_points[ij1]-control_points[ij])*Bn[i]*Bm1[j];
+                    if (i <= (nd-1)){
+                        Suv += nd*md*(control_points[i1j1]-control_points[i1j]-control_points[ij1]+control_points[ij])*Bn1[i]*Bm1[j];
+                    }
+                    if ( j <= (md-2) ){
+                        Svv += md*(md-1)*(control_points[ij2]-2*control_points[ij1]+control_points[ij])*Bn[i]*Bm2[j];
+                    }
+                }
+        }}
+        double E, F, G, L, M, N;
+        E = pow(Su.norm(),2);
+        F = Su*Sv;
+        G = pow(Sv.norm(),2);
+        L = vsnorm*Suu;
+        M = vsnorm*Suv;
+        N = vsnorm*Svv;
+        mesh.data(vert).mean = (N*E-2*M*F+L*G)/(2*(E*G-pow(F,2)));
+    }
+    if (mmm)
+      updateMeanMinMax();
 }

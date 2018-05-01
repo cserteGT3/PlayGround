@@ -88,7 +88,7 @@ private:
   bool show_nearest, is_empty;
   QList<MyMesh::VertexFaceIter> near_faces;
   void elevateDegree();
-  void continuesMean();
+  void bezierMeanCurvature(bool mmm);
   //////////////////////
   // Member variables //
   //////////////////////
