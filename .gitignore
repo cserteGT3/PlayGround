@@ -41,3 +41,8 @@ target_wrapper.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
+
+# jupyter notebooks
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
