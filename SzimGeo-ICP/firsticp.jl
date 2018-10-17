@@ -22,4 +22,4 @@ on(n -> updBT(:x,n),slix);
 on(n -> updBT(:y,n),sliy);
 on(n -> updBT(:z,n),sliz);
 
-trGui = vbox(slix,sliy,sliz);
+#trGui = vbox(slix,sliy,sliz);

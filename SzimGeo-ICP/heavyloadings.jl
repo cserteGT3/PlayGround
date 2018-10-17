@@ -1,9 +1,12 @@
-using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Logging
+using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Logging, Colors
 import MeshCat: vertices
-#load full bunny model from the folder next to the notebook file
-full_bunny = load("bunny\\reconstruction\\bun_zipper.ply");
-@info "Bunny loaded to full_bunny"
 #make a visualizer and load the bunny model with the :fbunny keyword
 vis = Visualizer();
-setobject!(vis[:fbunny],full_bunny);
-@info "Visualizer: vis with :fbunny"
+@info "Visualizer started: vis"
+
+function setModelPath(key)
+    if key == :homePC
+        global MODEL_FOLDER = "C:\\Users\\Pista\\Google Drive\\BME-GPK\\Programok\\ICP-models"
+    end
+    @info "MODEL_FOLDER is set to: $MODEL_FOLDER"
+end
