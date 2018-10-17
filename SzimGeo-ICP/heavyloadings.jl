@@ -1,4 +1,5 @@
 using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Logging
+import MeshCat: vertices
 #load full bunny model from the folder next to the notebook file
 full_bunny = load("bunny\\reconstruction\\bun_zipper.ply");
 @info "Bunny loaded to full_bunny"
