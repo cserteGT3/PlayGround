@@ -10,10 +10,13 @@ Packages that I use:
 * **CoordinaTransformations** - for obvious reasons
 * **StaticArrays** - for fast arrays and matrices
 * **Colors** - for visualizing different pointclouds
+* **NearestNeighbors** - for k-d tree
+* **Distances** - needed for the above package, and it's awesome on it's own
+* **GeometryTypes** - for creating meshes
 
 Packages that I use and part of Julia's stdlib
 * **Logging** - instead of `println()`
-* **Markdown** - for writing this readme
+* **Markdown** - for debugging this readme
 
 This readme can be displayed with: `using Markdown; Markdown.parse_file("README.md")`
 
