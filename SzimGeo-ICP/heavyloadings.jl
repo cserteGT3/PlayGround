@@ -11,4 +11,4 @@ elseif MODEL_PATH_KEY == :wNB
 elseif MODEL_PATH_KEY == :hNB
 	const MODEL_FOLDER = "C:\\Users\\Istvan\\Google Drive-cstamas\\BME-GPK\\Programok\\ICP-models"
 end
-@info "MMODEL_FOLDER set to $MODEL_FOLDER"
+@info "MODEL_FOLDER set to $MODEL_FOLDER"
