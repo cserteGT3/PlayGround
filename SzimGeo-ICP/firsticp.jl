@@ -26,11 +26,15 @@ on(n -> updBT(:z,n),sliz);
 
 #Real ICP things
 
-#Generating mesh from an array.
-function makeMeshfromArray(vtarray,MeshType = GLNormalMesh)
+"""
+    makeMeshfromArray(vtarray, MeshType = GLNormalMesh)
+
+Converts an array (containing arrays that have 3 elements) to mesh. With this function, only the vertices can be set.
+"""
+function makeMeshfromArray(vtarray, MeshType = GLNormalMesh)
     vl = size(vtarray,1)
     VertexType  = vertextype(MeshType)
-    #it should be Point3f0
+    #type of the vertex should be Point3f0
     FaceType    = facetype(MeshType)
     vts         = Array{VertexType}(undef, vl)
     fcs         = FaceType[]
@@ -40,11 +44,16 @@ function makeMeshfromArray(vtarray,MeshType = GLNormalMesh)
     return MeshType(vts,fcs)
 end
 
-#Generating mesh from matrix
-function makeMeshfromMatrix(vtarray,MeshType = GLNormalMesh)
+
+"""
+    makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
+
+Converts a matrix (with size: n×3) to mesh. With this function, only the vertices can be set.
+"""
+function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
     vl = size(vtarray,1)
     VertexType  = vertextype(MeshType)
-    #it should be Point3f0
+    #type of the vertex should be Point3f0
     FaceType    = facetype(MeshType)
     vts         = Array{VertexType}(undef, vl)
     fcs         = FaceType[]
@@ -54,8 +63,12 @@ function makeMeshfromMatrix(vtarray,MeshType = GLNormalMesh)
     return MeshType(vts,fcs)
 end
 
-#Generating matrix from mesh
-function makeMatrixFromMesh(meshe,fltype=FLTP)
+"""
+    makeMatrixFromMesh(meshe, fltype = FLTP)
+
+Converts a mesh to a matrix. With this function, only the vertices can be extracted.
+"""
+function makeMatrixFromMesh(meshe, fltype = FLTP)
     vts = vertices(meshe)
     vtsl = size(vts,1)
     outarr = zeros(fltype,vtsl,3)
