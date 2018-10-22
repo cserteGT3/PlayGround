@@ -1,16 +1,14 @@
 using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Logging, Colors
 import MeshCat: vertices
-#make a visualizer and load the bunny model with the :fbunny keyword
+#make a visualizer
 vis = Visualizer();
 @info "Visualizer started: vis"
 
-function setModelPath(key)
-    if key == :homePC
-        global const MODEL_FOLDER = "C:\\Users\\Pista\\Google Drive\\BME-GPK\\Programok\\ICP-models"
-	elseif key == :wNB
-		global const MODEL_FOLDER = "C:\\Users\\cstamas\\gdrive-csertegt\\BME-GPK\\Programok\\ICP-models"
-    elseif key == :homeNB
-		global const MODEL_FOLDER = "C:\\Users\\Istvan\\Google Drive-cstamas\\BME-GPK\\Programok\\ICP-models"
-	end
-    @info "MODEL_FOLDER is set to: $MODEL_FOLDER"
+if MODEL_PATH_KEY == :hPC
+	const MODEL_FOLDER = "C:\\Users\\Pista\\Google Drive\\BME-GPK\\Programok\\ICP-models"
+elseif MODEL_PATH_KEY == :wNB
+	const MODEL_FOLDER = "C:\\Users\\cstamas\\gdrive-csertegt\\BME-GPK\\Programok\\ICP-models"
+elseif MODEL_PATH_KEY == :hNB
+	const MODEL_FOLDER = "C:\\Users\\Istvan\\Google Drive-cstamas\\BME-GPK\\Programok\\ICP-models"
 end
+@info "MMODEL_FOLDER set to $MODEL_FOLDER"
