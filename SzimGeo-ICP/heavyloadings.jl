@@ -8,7 +8,9 @@ function setModelPath(key)
     if key == :homePC
         global const MODEL_FOLDER = "C:\\Users\\Pista\\Google Drive\\BME-GPK\\Programok\\ICP-models"
 	elseif key == :wNB
-		global const MODEL_FOLDER = "C:\Users\cstamas\gdrive-csertegt\BME-GPK\Programok\ICP-models"
-    end
+		global const MODEL_FOLDER = "C:\\Users\\cstamas\\gdrive-csertegt\\BME-GPK\\Programok\\ICP-models"
+    elseif key == :homeNB
+		global const MODEL_FOLDER = "C:\\Users\\Istvan\\Google Drive-cstamas\\BME-GPK\\Programok\\ICP-models"
+	end
     @info "MODEL_FOLDER is set to: $MODEL_FOLDER"
 end
