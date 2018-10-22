@@ -23,3 +23,44 @@ on(n -> updBT(:y,n),sliy);
 on(n -> updBT(:z,n),sliz);
 
 #trGui = vbox(slix,sliy,sliz);
+
+#Real ICP things
+
+#Generating mesh from an array.
+function makeMeshfromArray(vtarray,MeshType = GLNormalMesh)
+    vl = size(vtarray,1)
+    VertexType  = vertextype(MeshType)
+    #it should be Point3f0
+    FaceType    = facetype(MeshType)
+    vts         = Array{VertexType}(undef, vl)
+    fcs         = FaceType[]
+    for i in 1:vl
+        vts[i] = convert(Point3f0,vtarray[i])
+    end
+    return MeshType(vts,fcs)
+end
+
+#Generating mesh from matrix
+function makeMeshfromMatrix(vtarray,MeshType = GLNormalMesh)
+    vl = size(vtarray,1)
+    VertexType  = vertextype(MeshType)
+    #it should be Point3f0
+    FaceType    = facetype(MeshType)
+    vts         = Array{VertexType}(undef, vl)
+    fcs         = FaceType[]
+    for i in 1:vl
+        vts[i] = convert(Point3f0,vtarray[i,:])
+    end
+    return MeshType(vts,fcs)
+end
+
+#Generating matrix from mesh
+function makeMatrixFromMesh(meshe,fltype=FLTP)
+    vts = vertices(meshe)
+    vtsl = size(vts,1)
+    outarr = zeros(fltype,vtsl,3)
+    for i in 1:vtsl
+        outarr[i,:] = convert(Array{fltype,1},vts[i])
+    end
+    return outarr
+end
