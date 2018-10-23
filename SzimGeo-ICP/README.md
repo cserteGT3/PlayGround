@@ -1,6 +1,7 @@
 # Szimgeo-ICP
 
 This folder is for a project involving ICP (Iterative Closest Point) algorithms, meshes and pointclouds. This readme is only for a light documentation.
+Currently only `Float32` is supported, because the mesh type used by the packages.
 
 Packages that I use:
 * **IJulia** - for the Jupyter IDE
