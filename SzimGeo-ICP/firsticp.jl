@@ -62,18 +62,3 @@ function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
     end
     return MeshType(vts, fcs)
 end
-
-"""
-    makeMatrixFromMesh(meshe, fltype = FLTP)
-
-Converts a mesh to a matrix. With this function, only the vertices can be extracted.
-"""
-function makeMatrixFromMesh(meshe, fltype = FLTP)
-    vts = vertices(meshe)
-    vtsl = size(vts, 1)
-    outarr = zeros(fltype, vtsl, 3)
-    for i in 1:vtsl
-        outarr[i,:] = convert(Array{fltype, 1}, vts[i])
-    end
-    return outarr
-end
