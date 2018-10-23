@@ -64,13 +64,45 @@ function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
 end
 
 """
-    placeMeshInLife(space,idstring,meshe,cstring)
+    placeMeshInLife(space,meshe,idstring,cstring="black")
 
-Places the given mesh in the given MeshCat visualizer. An idstring must be given,
-to identify the mesh. Currently grouping is not supported.
-The color of the mesh can be set with a string, which maps to the Color package's dictionary.
+Places the given mesh in the given `MeshCat` visualizer. An `idstring` must be given,
+to identify the mesh. Grouping is not supported.
+The color of the mesh can be set with a string, which maps to the `Color` package's dictionary.
+If no `cstring` is given, the default black will be used.
 """
-function placeMeshInLife(space,idstring,meshe,cstring)
+function placeMeshInLife(space,meshe,idstring,cstring="black")
     vtrs = vertices(meshe)
     setobject!(space[idstring],PointCloud(vtrs,fill(convert(RGB{Float32},(parse(Colorant,cstring))),length(vtrs))))
+end
+
+"""
+    noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
+	
+Places random noise to the given mesh (returns with a new object).
+The type of the noise can be choosed: `:white`, which is random noise,
+`:outlier`, which adds outliers to the mesh and `:both`. Scaling can be fine tuned
+with the `wfactor` and the `ofcator` keywords (for white and outlier noise respectively).
+The keywords scale the factor calculated by this function.
+"""
+function noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
+    vts = vertices(sourceMesh)
+    vl = size(vts, 1)
+    VertexType = vertextype(MeshType)
+    target_vts = Array{VertexType}(undef, vl) 
+    if noisetype == :white
+        minv = minimum(norm.(vts))
+        #Scaling the random numbers with the tenth of the smallest vector
+        wfactor *= minv * 0.05
+        @info "The white noise scaling factor is $wfactor"
+        rand_arr = randn(Float32,(vl,3)).*wfactor 
+    end
+    for (ind,val) in enumerate(vts)
+        if noisetype == :white
+            target_vts[ind] = val + Point3f0(rand_arr[ind,:])
+        end
+    end
+    FaceType = facetype(MeshType)
+    fcs = FaceType[]
+    return MeshType(target_vts, fcs)
 end
