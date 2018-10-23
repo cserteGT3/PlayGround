@@ -29,12 +29,12 @@ on(n -> updBT(:z,n),sliz);
 """
     makeMeshfromArray(vtarray, MeshType = GLNormalMesh)
 
-Converts an array (containing arrays that have 3 elements) to mesh. With this function, only the vertices can be set.
+Converts an array (containing arrays that have 3 elements) to mesh.
+With this function, only the vertices can be set.
 """
 function makeMeshfromArray(vtarray, MeshType = GLNormalMesh)
     vl = size(vtarray, 1)
     VertexType = vertextype(MeshType)
-    #type of the vertex should be Point3f0
     FaceType = facetype(MeshType)
     vts = Array{VertexType}(undef, vl)
     fcs = FaceType[]
@@ -48,12 +48,12 @@ end
 """
     makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
 
-Converts a matrix (with size: n×3) to mesh. With this function, only the vertices can be set.
+Converts a matrix (with size: n×3) to mesh.
+With this function, only the vertices can be set.
 """
 function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
     vl = size(vtarray, 1)
     VertexType = vertextype(MeshType)
-    #type of the vertex should be Point3f0
     FaceType = facetype(MeshType)
     vts = Array{VertexType}(undef, vl)
     fcs = FaceType[]
@@ -61,4 +61,16 @@ function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
         vts[i] = convert(Point3f0, vtarray[i,:])
     end
     return MeshType(vts, fcs)
+end
+
+"""
+    placeMeshInLife(space,idstring,meshe,cstring)
+
+Places the given mesh in the given MeshCat visualizer. An idstring must be given,
+to identify the mesh. Currently grouping is not supported.
+The color of the mesh can be set with a string, which maps to the Color package's dictionary.
+"""
+function placeMeshInLife(space,idstring,meshe,cstring)
+    vtrs = vertices(meshe)
+    setobject!(space[idstring],PointCloud(vtrs,fill(convert(RGB{Float32},(parse(Colorant,cstring))),length(vtrs))))
 end
