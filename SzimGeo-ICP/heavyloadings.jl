@@ -1,4 +1,4 @@
-using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Logging, Colors, GeometryTypes, LinearAlgebra
+using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Logging, Colors, GeometryTypes, LinearAlgebra, NearestNeighbors
 import MeshCat: vertices
 import GeometryTypes: Point3f0
 #make a visualizer
