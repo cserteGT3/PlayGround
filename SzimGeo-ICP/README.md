@@ -19,6 +19,7 @@ Packages that I use and part of Julia's stdlib
 * **Logging** - instead of `println()`
 * **Markdown** - for debugging this readme
 * **LinearAlgebra** - for obvious reasons
+* **Random** - for obvious reasons
 
 This readme can be displayed with: `using Markdown; Markdown.parse_file("README.md")`
 
