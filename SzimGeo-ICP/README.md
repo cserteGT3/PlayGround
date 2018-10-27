@@ -28,3 +28,11 @@ And here's a help for [Github Markdown](https://guides.github.com/features/maste
 
 ### TODOs:
 * Remove Random pkg if not needed
+* Which is faster:
+```julia
+using RecursiveArrayTools
+VA = VectorOfArray(A)
+arr = convert(Array,VA)
+```
+or
+```vcat(A...)```
