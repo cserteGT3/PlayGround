@@ -83,7 +83,7 @@ Places random noise to the given mesh (returns with a new object).
 The type of the noise can be choosed: `:white`, which is random noise,
 `:outlier`, which adds outliers to the mesh and `:both`. Scaling can be fine tuned
 with the `wfactor` and the `ofcator` keywords (for white and outlier noise respectively).
-The keywords scale the factor calculated by this function.
+The keywords scales the factor calculated inside this function.
 """
 function noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
     vts = vertices(sourceMesh)
@@ -105,4 +105,24 @@ function noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wf
     FaceType = facetype(MeshType)
     fcs = FaceType[]
     return MeshType(target_vts, fcs)
+end
+
+"""
+    randomSamplePoints(parray,prc)
+
+Samples random elements from `pararray`. `pararray` must be an array of `Point3f0`.
+The number of the sampled element is the `prc` percent of the input array's length.
+As `prc` approaches 1, the performance gets poorer.
+More info at the documentation of the `self_avoid_sample!` 
+[function.](https://juliastats.github.io/StatsBase.jl/stable/sampling.html#StatsBase.self_avoid_sample!)
+"""
+function randomSamplePoints(parray,prc)
+    @assert 0.01 <= prc && prc <=1
+    if (eltype(parray) != Point3f0) && (eltype(parray) != SArray{Tuple{3},Float64,1,3})
+        @error "The input array's element type must be Point3f0 or Float32 based SVector!"
+    end
+    numofsample = floor(size(parray,1)*prc)
+    sampled_array = [@SVector zeros(3) for i in 1:numofsample]
+    self_avoid_sample!(parray,sampled_array)
+    return sampled_array
 end

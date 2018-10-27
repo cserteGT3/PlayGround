@@ -2,6 +2,7 @@ using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Colors
 using Logging, LinearAlgebra, Random
 import MeshCat: vertices
 import GeometryTypes: Point3f0
+import StatsBase.self_avoid_sample!
 #make a visualizer
 vis = Visualizer();
 @info "Visualizer started: vis"
