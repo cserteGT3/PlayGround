@@ -126,3 +126,45 @@ function randomSamplePoints(parray,prc)
     self_avoid_sample!(parray,sampled_array)
     return sampled_array
 end
+
+"""
+    scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
+
+Scales a mesh with a scalar. Works only with a mesh that has only vertices.
+"""
+function scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
+    vts = vertices(sourceMesh)
+    VertexType = vertextype(MeshType)
+    target_vts  = vts.*scale
+    FaceType = facetype(MeshType)
+    fcs = FaceType[]
+    return MeshType(target_vts, fcs)
+end
+
+"""
+    createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true)
+
+Pairs an array of points to their nearest point in the kdTree.
+Returns an index array, which can be used to index the `kdd_array`,
+and a matrix, which first column is the weight vector, and the second is
+the corresponding distance (paired with the index array).
+The last argument: `sorted` can be used to sort the results by the distance.
+"""
+function createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true)
+    pid, pdx = knn(kdTree,toPair_array,1)
+    p_nums = size(pid,1)
+	pid_VA = VectorOfArray(pid)
+    pdx_VA = VectorOfArray(pdx)
+    pair_traits_Float = Array{Float32}(undef,p_nums,2)
+    pair_traits_Int = convert(Array,pid_VA)'
+    pair_traits_Float[:,1] = fill(1,p_nums)
+    #pair_traits_Float[:,2] = [sqeuclidean(toPair_array[i],kdd_array[pair_traits_Int[i]]) for i in 1:p_nums] #Distances pkg
+    pair_traits_Float[:,2] = convert(Array,pdx_VA)'
+    if !sorted
+        return pair_traits_Int,pair_traits_Float
+    end    
+    sorted_it = sortperm(pair_traits_Float[:,2])
+    pair_traits_Float = pair_traits_Float[sorted_it,:]
+    pair_traits_Int = pair_traits_Int[sorted_it]
+    return pair_traits_Int, pair_traits_Float
+end
