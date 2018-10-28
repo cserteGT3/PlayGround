@@ -4,8 +4,8 @@ import MeshCat: vertices
 import GeometryTypes: Point3f0
 import StatsBase.self_avoid_sample!
 #make a visualizer
-vis = Visualizer();
-@info "Visualizer started: vis"
+#vis = Visualizer();
+#@info "Visualizer started: vis"
 
 if MODEL_PATH_KEY == :hPC
 	const MODEL_FOLDER = "C:\\Users\\Pista\\Google Drive\\BME-GPK\\Programok\\ICP-models"
