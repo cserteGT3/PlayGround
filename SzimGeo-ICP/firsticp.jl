@@ -121,7 +121,7 @@ function randomSamplePoints(parray,prc)
     if (eltype(parray) != Point3f0) && (eltype(parray) != SArray{Tuple{3},Float64,1,3})
         @error "The input array's element type must be Point3f0 or Float32 based SVector!"
     end
-    numofsample = floor(size(parray,1)*prc)
+    numofsample = floor(Int,size(parray,1)*prc)
     sampled_array = [@SVector zeros(3) for i in 1:numofsample]
     self_avoid_sample!(parray,sampled_array)
     return sampled_array
@@ -167,4 +167,18 @@ function createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true)
     pair_traits_Float = pair_traits_Float[sorted_it,:]
     pair_traits_Int = pair_traits_Int[sorted_it]
     return pair_traits_Int, pair_traits_Float
+end
+
+"""
+    rejectWorstPercent(is, trs, prc)
+
+Rejects the last `prc` percent of the given indexers and float traits.
+Everything should be sorted so the end of the array is the "worst".
+"""
+function rejectWorstPercent(is, trs, prc)
+    issi = size(is,1)
+    @assert 0.01 <= prc && prc <1
+    @assert issi == size(trs,1)
+    numofsample = issi-floor(Int,issi*prc)
+    return is[1:numofsample],trs[1:numofsample,:]
 end
