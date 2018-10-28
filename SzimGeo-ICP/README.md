@@ -1,7 +1,7 @@
 # Szimgeo-ICP
 
 This folder is for a project involving ICP (Iterative Closest Point) algorithms, meshes and pointclouds. This readme is only for a light documentation.
-Currently only `Float32` is supported, because the mesh type used by the packages.
+Currently only `Float32` is used, because the mesh type used by the packages.
 
 ## Used packages
 * **IJulia** - for the Jupyter IDE
@@ -15,6 +15,12 @@ Currently only `Float32` is supported, because the mesh type used by the package
 * **Distances** - needed for the above package, and it's awesome on it's own
 * **GeometryTypes** - for creating meshes
 * **StatsBase** - for random sampling
+* **BenchmarkTools** - for benchmarking
+* **RecursiveArrayTools** - instead of `vcat(A...)`
+
+For a little help:
+
+`add MeshCat FileIO MeshIO Interact CoordinaTransformations StaticArrays Colors NearestNeighbors GeometryTypes StatsBase BenchmarkTools RecursiveArrayTools``
 
 ## Used packages that are part of Julia's stdlib
 * **Logging** - instead of `println()`
@@ -28,11 +34,4 @@ And here's a help for [Github Markdown](https://guides.github.com/features/maste
 
 ### TODOs:
 * Remove Random pkg if not needed
-* Which is faster:
-```julia
-using RecursiveArrayTools
-VA = VectorOfArray(A)
-arr = convert(Array,VA)
-```
-or
-```vcat(A...)```
+* Create a dummy ICP case, which compiles all the functions.
