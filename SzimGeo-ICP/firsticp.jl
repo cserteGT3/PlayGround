@@ -110,7 +110,7 @@ end
 """
     randomSamplePoints(parray,prc)
 
-Samples random elements from `pararray`. `pararray` must be an array of `Point3f0`.
+Samples random elements from `pararray`. `pararray` must be an array of `SVector`.
 The number of the sampled element is the `prc` percent of the input array's length.
 As `prc` approaches 1, the performance gets poorer.
 More info at the documentation of the `self_avoid_sample!` 
@@ -118,11 +118,11 @@ More info at the documentation of the `self_avoid_sample!`
 """
 function randomSamplePoints(parray,prc)
     @assert 0.01 <= prc && prc <=1
-    if (eltype(parray) != Point3f0) && (eltype(parray) != SArray{Tuple{3},Float64,1,3})
-        @error "The input array's element type must be Point3f0 or Float32 based SVector!"
-    end
+    #if (eltype(parray) != Point3f0) && (eltype(parray) != SArray{Tuple{3},Float64,1,3})
+    #    @error "The input array's element type must be Point3f0 or Float32 based SVector!"
+    #end
     numofsample = floor(Int,size(parray,1)*prc)
-    sampled_array = [@SVector zeros(3) for i in 1:numofsample]
+    sampled_array = [SVector{4,eltype(parray[1])}(zeros(4)) for i in 1:numofsample]
     self_avoid_sample!(parray,sampled_array)
     return sampled_array
 end
@@ -150,18 +150,18 @@ and a matrix, which first column is the weight vector, and the second is
 the corresponding distance (paired with the index array).
 The last argument: `sorted` can be used to sort the results by the distance.
 """
-function createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true)
+function createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true; fltype=Float32)
     pid, pdx = knn(kdTree,toPair_array,1)
     p_nums = size(pid,1)
 	pid_VA = VectorOfArray(pid)
     pdx_VA = VectorOfArray(pdx)
-    pair_traits_Float = Array{Float32}(undef,p_nums,2)
+    pair_traits_Float = Array{fltype}(undef,p_nums,2)
     pair_traits_Int = convert(Array,pid_VA)'
     pair_traits_Float[:,1] = fill(1,p_nums)
     #pair_traits_Float[:,2] = [sqeuclidean(toPair_array[i],kdd_array[pair_traits_Int[i]]) for i in 1:p_nums] #Distances pkg
     pair_traits_Float[:,2] = convert(Array,pdx_VA)'
     if !sorted
-        return pair_traits_Int,pair_traits_Float
+        return pair_traits_Int, pair_traits_Float
     end    
     sorted_it = sortperm(pair_traits_Float[:,2])
     pair_traits_Float = pair_traits_Float[sorted_it,:]
@@ -180,5 +180,15 @@ function rejectWorstPercent(is, trs, prc)
     @assert 0.01 <= prc && prc <1
     @assert issi == size(trs,1)
     numofsample = issi-floor(Int,issi*prc)
-    return is[1:numofsample],trs[1:numofsample,:]
+    return is[1:numofsample], trs[1:numofsample,:]
+end
+
+"""
+    convert2HomogeneousArray(nonHomoArray, fltype=Float32)
+	
+Converts an array of points to an array of homogeneous vectors represented with `SVector{4,fltype}`.
+"""
+function convert2HomogeneousArray(nonHomoArray, fltype=Float32)
+    hom_arr = [ SVector{4,fltype}(vcat(nonHomoArray[i]...,1)) for i in 1:size(nonHomoArray,1) ]
+    return hom_arr
 end
