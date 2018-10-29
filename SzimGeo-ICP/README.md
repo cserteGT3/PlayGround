@@ -12,7 +12,7 @@ Currently only `Float32` is used, because the mesh type used by the packages.
 * **StaticArrays** - for fast arrays and matrices
 * **Colors** - for visualizing different pointclouds
 * **NearestNeighbors** - for k-d tree
-* **Distances** - needed for the above package, and it's awesome on it's own
+* **Distances** - needed for the above package, and helps debugging
 * **GeometryTypes** - for creating meshes
 * **StatsBase** - for random sampling
 * **BenchmarkTools** - for benchmarking

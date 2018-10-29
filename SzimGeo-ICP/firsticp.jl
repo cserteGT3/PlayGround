@@ -142,31 +142,27 @@ function scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
 end
 
 """
-    createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true)
+    createKnnPairArray(toPair, kdTree; fltype=Float32)
 
 Pairs an array of points to their nearest point in the kdTree.
-Returns an index array, which can be used to index the `kdd_array`,
-and a matrix, which first column is the weight vector, and the second is
-the corresponding distance (paired with the index array).
 The last argument: `sorted` can be used to sort the results by the distance.
+Return values are two matrices, the first contains the indexes of the kd treed array,
+and the indexes of the `toPair`.
+Second matrice contains a weight vector, and a vector containing the distances.
 """
-function createKnnPairArray(toPair_array, kdTree, kdd_array, sorted=true; fltype=Float32)
-    pid, pdx = knn(kdTree,toPair_array,1)
+function createKnnPairArray(toPair, kdTree; fltype=Float32)
+    pid, pdx = knn(kdTree,toPair,1)
     p_nums = size(pid,1)
 	pid_VA = VectorOfArray(pid)
     pdx_VA = VectorOfArray(pdx)
     pair_traits_Float = Array{fltype}(undef,p_nums,2)
-    pair_traits_Int = convert(Array,pid_VA)'
+    indexer_Int = Array{Int}(undef,p_nums,2)
+    indexer_Int[:,1] = convert(Array,pid_VA)'
+    indexer_Int[:,2] = collect(1:p_nums)
     pair_traits_Float[:,1] = fill(1,p_nums)
-    #pair_traits_Float[:,2] = [sqeuclidean(toPair_array[i],kdd_array[pair_traits_Int[i]]) for i in 1:p_nums] #Distances pkg
+    #pair_traits_Float[:,2] = [sqeuclidean(toPair[i],kdd_array[pair_traits_Int[i]]) for i in 1:p_nums] #Distances pkg
     pair_traits_Float[:,2] = convert(Array,pdx_VA)'
-    if !sorted
-        return pair_traits_Int, pair_traits_Float
-    end    
-    sorted_it = sortperm(pair_traits_Float[:,2])
-    pair_traits_Float = pair_traits_Float[sorted_it,:]
-    pair_traits_Int = pair_traits_Int[sorted_it]
-    return pair_traits_Int, pair_traits_Float
+    return indexer_Int, pair_traits_Float
 end
 
 """
@@ -180,7 +176,7 @@ function rejectWorstPercent(is, trs, prc)
     @assert 0.01 <= prc && prc <1
     @assert issi == size(trs,1)
     numofsample = issi-floor(Int,issi*prc)
-    return is[1:numofsample], trs[1:numofsample,:]
+    return is[1:numofsample,:], trs[1:numofsample,:]
 end
 
 """
