@@ -20,7 +20,7 @@ Currently only `Float32` is used, because the mesh type used by the packages.
 
 For a little help:
 
-`add MeshCat FileIO MeshIO Interact CoordinaTransformations StaticArrays Colors NearestNeighbors GeometryTypes StatsBase BenchmarkTools RecursiveArrayTools`
+`add MeshCat FileIO MeshIO Interact CoordinateTransformations StaticArrays Colors Distances NearestNeighbors GeometryTypes StatsBase BenchmarkTools RecursiveArrayTools`
 
 ## Used packages that are part of Julia's stdlib
 * **Logging** - instead of `println()`
