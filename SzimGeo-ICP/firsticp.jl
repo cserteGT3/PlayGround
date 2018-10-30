@@ -112,16 +112,16 @@ end
 
 Samples random elements from `pararray`. `pararray` must be an array of `SVector`.
 The number of the sampled element is the `prc` percent of the input array's length.
-As `prc` approaches 1, the performance gets poorer.
+As `prc` approaches 100%, the performance gets poorer.
 More info at the documentation of the `self_avoid_sample!` 
 [function.](https://juliastats.github.io/StatsBase.jl/stable/sampling.html#StatsBase.self_avoid_sample!)
 """
 function randomSamplePoints(parray,prc)
-    @assert 0.01 <= prc && prc <=1
+    @assert 1 <= prc && prc <= 100 "The percent should be: 1 <= prc <= 100"
     #if (eltype(parray) != Point3f0) && (eltype(parray) != SArray{Tuple{3},Float64,1,3})
     #    @error "The input array's element type must be Point3f0 or Float32 based SVector!"
     #end
-    numofsample = floor(Int,size(parray,1)*prc)
+    numofsample = floor(Int,size(parray,1)*prc/100)
     sampled_array = [SVector{4,eltype(parray[1])}(zeros(4)) for i in 1:numofsample]
     self_avoid_sample!(parray,sampled_array)
     return sampled_array
@@ -166,20 +166,6 @@ function createKnnPairArray(toPair, kdTree; fltype=Float32)
 end
 
 """
-    rejectWorstPercent(is, trs, prc)
-
-Rejects the last `prc` percent of the given indexers and float traits.
-Everything should be sorted so the end of the array is the "worst".
-"""
-function rejectWorstPercent(is, trs, prc)
-    issi = size(is,1)
-    @assert 0.01 <= prc && prc <1
-    @assert issi == size(trs,1)
-    numofsample = issi-floor(Int,issi*prc)
-    return is[1:numofsample,:], trs[1:numofsample,:]
-end
-
-"""
     convert2HomogeneousArray(nonHomoArray, fltype=Float32)
 	
 Converts an array of points to an array of homogeneous vectors represented with `SVector{4,fltype}`.
@@ -187,4 +173,54 @@ Converts an array of points to an array of homogeneous vectors represented with 
 function convert2HomogeneousArray(nonHomoArray, fltype=Float32)
     hom_arr = [ SVector{4,fltype}(vcat(nonHomoArray[i]...,1)) for i in 1:size(nonHomoArray,1) ]
     return hom_arr
+end
+
+"""
+    allEqual(x)
+
+Returns `true` if the array contains the same elements, `false` otherwise.
+"""
+@inline function allEqual(x)
+    length(x) < 2 && return true
+    e1 = x[1]
+    @inbounds for i=2:length(x)
+        x[i] == e1 || return false
+    end
+    return true
+end
+
+"""
+    chopEndOfArray(prc, tupi...)
+
+Chops the `prc` percent of one or multiple arrays.
+If multiple arrays is given, all their sizes must be the same.
+"""
+function chopEndOfArray(prc, tupi...)
+    @assert allEqual([size(tupi[i],1) for i in 1:length(tupi)]) "The arrays should have the same length."
+    @assert allEqual([size(tupi[i],2) for i in 1:length(tupi)]) "The matrices should have the same width."
+    @assert 1 <= prc && prc < 100
+    issi = size(tupi[1],1)
+    numofsample = issi-floor(Int,issi*prc/100)
+    ret = ()
+    if size(tupi[1],2) > 1
+        for i in 1:length(tupi)
+            ret = (ret...,tupi[i][1:numofsample,:])
+        end
+    else
+        for i in 1:length(tupi)
+            ret = (ret...,tupi[i][1:numofsample])
+        end
+    end
+    return ret
+end
+
+function chopEndOfArray(prc, tupi)
+    issi = size(tupi,1)
+    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100"
+    numofsample = issi-floor(Int,issi*prc/100)
+    if size(tupi,2) > 1
+        return tupi[1:numofsample,:]
+    else
+        return tupi[1:numofsample]
+    end
 end
