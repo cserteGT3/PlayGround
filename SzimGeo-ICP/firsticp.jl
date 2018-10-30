@@ -29,8 +29,9 @@ on(n -> updBT(:z,n),sliz);
 """
     makeMeshfromArray(vtarray, MeshType = GLNormalMesh)
 
-Converts an array (containing arrays that have 3 elements) to mesh.
-With this function, only the vertices can be set.
+Convert array (containing arrays that have 3 elements) to mesh.
+
+Only vertices can be set.
 """
 function makeMeshfromArray(vtarray, MeshType = GLNormalMesh)
     vl = size(vtarray, 1)
@@ -48,8 +49,9 @@ end
 """
     makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
 
-Converts a matrix (with size: n×3) to mesh.
-With this function, only the vertices can be set.
+Convert matrix (with size: n×3) to mesh.
+
+Only vertices can be set.
 """
 function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
     vl = size(vtarray, 1)
@@ -64,29 +66,30 @@ function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
 end
 
 """
-    placeMeshInLife(space,meshe,idstring,cstring="black")
+    placeMeshInLife(space, mesh, idstring, cstring = "black")
 
-Places the given mesh in the given `MeshCat` visualizer. An `idstring` must be given,
-to identify the mesh. Grouping is not supported.
-The color of the mesh can be set with a string, which maps to the `Color` package's dictionary.
-If no `cstring` is given, the default black will be used.
+Place mesh in a `MeshCat` visualizer.
+
+Grouping is not supported.
+`cstring` maps to the `Color` package's dictionary.
 """
-function placeMeshInLife(space,meshe,idstring,cstring="black")
-    vtrs = vertices(meshe)
+function placeMeshInLife(space, mesh, idstring, cstring = "black")
+    vtrs = vertices(mesh)
     setobject!(space[idstring],PointCloud(vtrs,fill(convert(RGB{Float32},(parse(Colorant,cstring))),length(vtrs))))
 end
 
 """
-    noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
-	
-Places random noise to the given mesh (returns with a new object).
-The type of the noise can be choosed: `:white`, which is random noise,
-`:outlier`, which adds outliers to the mesh and `:both`. Scaling can be fine tuned
-with the `wfactor` and the `ofcator` keywords (for white and outlier noise respectively).
-The keywords scales the factor calculated inside this function.
+    noisifyMesh(sMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
+
+Place random noise to the mesh.	
+
+# Arguments
+- `noistype`: can be: `:white`, `:outlier`, or `:both`
+- `wfactor`: scaling value for white noise (scales the factor calculated by the function).
+- `ofactor`: scaling value for outlier noise (scales the factor calculated by the function).
 """
-function noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
-    vts = vertices(sourceMesh)
+function noisifyMesh(sMesh, noisetype = :white; MeshType = GLNormalMesh, wfactor = 1, ofactor = 1)
+    vts = vertices(sMesh)
     vl = size(vts, 1)
     VertexType = vertextype(MeshType)
     target_vts = Array{VertexType}(undef, vl) 
@@ -108,19 +111,20 @@ function noisifyMesh(sourceMesh, noisetype = :white; MeshType = GLNormalMesh, wf
 end
 
 """
-    randomSamplePoints(parray,prc)
+    randomSamplePoints(parray, prc)
 
-Samples random elements from `pararray`. `pararray` must be an array of `SVector`.
-The number of the sampled element is the `prc` percent of the input array's length.
+Sample random elements from an array.
+
 As `prc` approaches 100%, the performance gets poorer.
 More info at the documentation of the `self_avoid_sample!` 
 [function.](https://juliastats.github.io/StatsBase.jl/stable/sampling.html#StatsBase.self_avoid_sample!)
+
+# Arguments
+- `parray`: array of dim4 `SVector`
+- `prc`: percentage of sampled points 
 """
-function randomSamplePoints(parray,prc)
-    @assert 1 <= prc && prc <= 100 "The percent should be: 1 <= prc <= 100"
-    #if (eltype(parray) != Point3f0) && (eltype(parray) != SArray{Tuple{3},Float64,1,3})
-    #    @error "The input array's element type must be Point3f0 or Float32 based SVector!"
-    #end
+function randomSamplePoints(parray, prc)
+    @assert 1 <= prc && prc <= 100 "The percent should be: 1 <= prc <= 100."
     numofsample = floor(Int,size(parray,1)*prc/100)
     sampled_array = [SVector{4,eltype(parray[1])}(zeros(4)) for i in 1:numofsample]
     self_avoid_sample!(parray,sampled_array)
@@ -130,7 +134,9 @@ end
 """
     scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
 
-Scales a mesh with a scalar. Works only with a mesh that has only vertices.
+Scale mesh with a scalar. 
+
+Only vertices are scaled, doesn't return faces.
 """
 function scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
     vts = vertices(sourceMesh)
@@ -142,15 +148,15 @@ function scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
 end
 
 """
-    createKnnPairArray(toPair, kdTree; fltype=Float32)
+    createKnnPairArray(toPair, kdTree; fltype = Float32)
 
-Pairs an array of points to their nearest point in the kdTree.
-The last argument: `sorted` can be used to sort the results by the distance.
+Pair an array of points to their nearest point in the kdTree.
+
 Return values are two matrices, the first contains the indexes of the kd treed array,
-and the indexes of the `toPair`.
-Second matrice contains a weight vector, and a vector containing the distances.
+and the indexes of the `toPair` array.
+Second matrice contains a weight vector, and an array containing the distances.
 """
-function createKnnPairArray(toPair, kdTree; fltype=Float32)
+function createKnnPairArray(toPair, kdTree; fltype = Float32)
     pid, pdx = knn(kdTree,toPair,1)
     p_nums = size(pid,1)
 	pid_VA = VectorOfArray(pid)
@@ -160,25 +166,26 @@ function createKnnPairArray(toPair, kdTree; fltype=Float32)
     indexer_Int[:,1] = convert(Array,pid_VA)'
     indexer_Int[:,2] = collect(1:p_nums)
     pair_traits_Float[:,1] = fill(1,p_nums)
-    #pair_traits_Float[:,2] = [sqeuclidean(toPair[i],kdd_array[pair_traits_Int[i]]) for i in 1:p_nums] #Distances pkg
     pair_traits_Float[:,2] = convert(Array,pdx_VA)'
     return indexer_Int, pair_traits_Float
 end
 
 """
-    convert2HomogeneousArray(nonHomoArray, fltype=Float32)
+    convert2HomogeneousArray(toHArray, fltype = Float32)
 	
-Converts an array of points to an array of homogeneous vectors represented with `SVector{4,fltype}`.
+Convert an array of points to an array of homogeneous vectors.
+
+Representation of the homogeneous vectors are `SVector{4,fltype}`.
 """
-function convert2HomogeneousArray(nonHomoArray, fltype=Float32)
-    hom_arr = [ SVector{4,fltype}(vcat(nonHomoArray[i]...,1)) for i in 1:size(nonHomoArray,1) ]
+function convert2HomogeneousArray(toHArray, fltype = Float32)
+    hom_arr = [ SVector{4,fltype}(vcat(toHArray[i]...,1)) for i in 1:size(toHArray,1) ]
     return hom_arr
 end
 
 """
     allEqual(x)
 
-Returns `true` if the array contains the same elements, `false` otherwise.
+Return `true`, if the array contains the same elements.
 """
 @inline function allEqual(x)
     length(x) < 2 && return true
@@ -192,13 +199,14 @@ end
 """
     chopEndOfArray(prc, tupi...)
 
-Chops the `prc` percent of one or multiple arrays.
-If multiple arrays is given, all their sizes must be the same.
+Chop `prc`% of the end of the array.
+
+If multiple arrays are given, all their sizes must be the same.
 """
 function chopEndOfArray(prc, tupi...)
     @assert allEqual([size(tupi[i],1) for i in 1:length(tupi)]) "The arrays should have the same length."
     @assert allEqual([size(tupi[i],2) for i in 1:length(tupi)]) "The matrices should have the same width."
-    @assert 1 <= prc && prc < 100
+    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
     issi = size(tupi[1],1)
     numofsample = issi-floor(Int,issi*prc/100)
     ret = ()
@@ -216,7 +224,7 @@ end
 
 function chopEndOfArray(prc, tupi)
     issi = size(tupi,1)
-    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100"
+    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
     numofsample = issi-floor(Int,issi*prc/100)
     if size(tupi,2) > 1
         return tupi[1:numofsample,:]
