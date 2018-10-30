@@ -34,5 +34,6 @@ And here's a help for [Github Markdown](https://guides.github.com/features/maste
 
 ### TODOs:
 * Remove Random pkg if not needed
-* Create a dummy ICP case, which compiles all the functions.
-* Add `@inbounds` macro
+* Create a dummy ICP case, which compiles all the functions
+* Add `@inbounds` and `@inlined` macro
+* Proper `AssertionError` messages
