@@ -213,41 +213,34 @@ Return `true`, if the array contains the same elements.
 end
 
 """
-    chopEndOfArray(prc, tupi)
+    chopEndOfArray(prc, array)
 
-Chop `prc`% of the end of the array or matrix.
+Chop `prc`% of the end of array or matrix.
 """
-function chopEndOfArray(prc, tupi)
-    issi = size(tupi,1)
+function chopEndOfArray(prc, array::Array{T,1}) where T<:Number
     @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
+    issi = size(array,1)
     numofsample = issi-floor(Int,issi*prc/100)
-    if size(tupi,2) > 1
-        return tupi[1:numofsample,:]
-    else
-        return tupi[1:numofsample]
-    end
+    return array[1:numofsample]
+end
+
+function chopEndOfArray(prc, array::Array{T,2}) where T<:Number
+    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
+    issi = size(array,1)
+    numofsample = issi-floor(Int,issi*prc/100)
+    return array[1:numofsample,:]
 end
 
 """
     chopEndOfArray(prc, tupi...)
 
-When applied to multiple arrays or matrixes, all their size must be the same.
+Can be applied to any number of arrays, matrixes.
 """
 function chopEndOfArray(prc, tupi...)
-    @assert allEqual([size(tupi[i],1) for i in 1:length(tupi)]) "The arrays should have the same length."
-    @assert allEqual([size(tupi[i],2) for i in 1:length(tupi)]) "The matrixes should have the same width."
     @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
-    issi = size(tupi[1],1)
-    numofsample = issi-floor(Int,issi*prc/100)
     ret = ()
-    if size(tupi[1],2) > 1
-        for i in 1:length(tupi)
-            ret = (ret...,tupi[i][1:numofsample,:])
-        end
-    else
-        for i in 1:length(tupi)
-            ret = (ret...,tupi[i][1:numofsample])
-        end
+    for i in 1:length(tupi)
+        ret = (ret...,chopEndOfArray(prc,tupi[i]))
     end
     return ret
 end
