@@ -32,8 +32,10 @@ This readme can be displayed with: `using Markdown; Markdown.parse_file("README.
 
 And here's a help for [Github Markdown](https://guides.github.com/features/mastering-markdown/)
 
+This repository is edited on Windows. Therefore my git client handles the line endings.
+
 ### TODOs:
-* Remove Random pkg if not needed
-* Create a dummy ICP case, which compiles all the functions
-* Add `@inbounds` and `@inlined` macro
-* Proper `AssertionError` messages
+- [x] Remove Random pkg if not needed
+- [ ] Create a dummy ICP case, which compiles all the functions
+- [ ] Add `@inbounds` and `@inlined` macro
+- [ ] Proper `AssertionError` messages
