@@ -152,9 +152,25 @@ end
 
 Pair an array of points to their nearest point in the kdTree.
 
-Return values are two matrices, the first contains the indexes of the kd treed array,
-and the indexes of the `toPair` array.
-Second matrice contains a weight vector, and an array containing the distances.
+Return values are two matrixes, the first contains
+the indexes of the kd treed and  the `toPair` array.
+Second matrix contains a weight vector, and an array containing the distances.
+
+# Examples
+
+This example shows how to access the paired elements.
+Using with a reference array `ref_array`, and a sampled `read_array`.
+`euclidean()` is a function from `Distances` package.
+
+```julia-repl
+julia> kdtree_ref = KDTree(ref_array);
+julia> indexM, traitM = createKnnPairArray(read_array, kdtree_ref);
+julia> inds = 1:10;
+julia> dist1 = euclidean.(ref_array[indexM[inds,1]],read_array[indexM[inds,2]]);
+julia> dist2 = traitM[indexM[inds,2],2];
+julia> dist1 == dist2
+true
+```
 """
 function createKnnPairArray(toPair, kdTree; fltype = Float32)
     pid, pdx = knn(kdTree,toPair,1)
@@ -197,15 +213,29 @@ Return `true`, if the array contains the same elements.
 end
 
 """
+    chopEndOfArray(prc, tupi)
+
+Chop `prc`% of the end of the array or matrix.
+"""
+function chopEndOfArray(prc, tupi)
+    issi = size(tupi,1)
+    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
+    numofsample = issi-floor(Int,issi*prc/100)
+    if size(tupi,2) > 1
+        return tupi[1:numofsample,:]
+    else
+        return tupi[1:numofsample]
+    end
+end
+
+"""
     chopEndOfArray(prc, tupi...)
 
-Chop `prc`% of the end of the array.
-
-If multiple arrays are given, all their sizes must be the same.
+When applied to multiple arrays or matrixes, all their size must be the same.
 """
 function chopEndOfArray(prc, tupi...)
     @assert allEqual([size(tupi[i],1) for i in 1:length(tupi)]) "The arrays should have the same length."
-    @assert allEqual([size(tupi[i],2) for i in 1:length(tupi)]) "The matrices should have the same width."
+    @assert allEqual([size(tupi[i],2) for i in 1:length(tupi)]) "The matrixes should have the same width."
     @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
     issi = size(tupi[1],1)
     numofsample = issi-floor(Int,issi*prc/100)
@@ -222,13 +252,51 @@ function chopEndOfArray(prc, tupi...)
     return ret
 end
 
-function chopEndOfArray(prc, tupi)
-    issi = size(tupi,1)
-    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
-    numofsample = issi-floor(Int,issi*prc/100)
-    if size(tupi,2) > 1
-        return tupi[1:numofsample,:]
-    else
-        return tupi[1:numofsample]
-    end
+"""
+    sortIndexes(indM, dist_array)
+
+Sort index matrix by a distance array.
+
+Return the sorted matrix and the permutation array.
+"""
+function sortIndexes(indM, dist_array)
+    s_it = sortperm(dist_array)
+    sorted_i = indM[s_it,:]
+    return sorted_i, s_it
+end
+
+"""
+    sortIndandTraits(indexMat, traitMat; sortby = 2)
+
+Sort index and trait matrix by the distances in the trait matrix.
+
+Return the sorted index and trait matrix, and also the permutation array.
+
+# Arguments
+- `sortby = 2`: selects the trait matrix's column to sort by.
+
+# Examples
+
+This example shows how to acces the the trait matrix's elements.
+`indM` is an indexer matrix and the second column of `traitM`
+contains the distances to sort by.
+`indM` contains the indexes that pairs `ref_array` and `read_array`.
+`euclidean()` is a function from `Distances` package.
+
+```julia-repl
+julia> s_indM, s_traitM, s_it = sortIndandTraits(indM, traitM);
+julia> inds = 1:10;
+julia> dist1 = euclidean.(ref_array[s_indM[inds,1]],read_array[s_indM[inds,2]]);
+julia> dist2 = s_traitM[inds,2];
+julia> ds_ind = sortperm(s_it);
+julia> dist3 = s_traitM[ds_ind[s_indM[inds,2]],2];
+julia> dist4 = traitM[s_indM[inds,2],2];
+julia> dist1 == dist2 == dist3 == dist4
+true
+```
+"""
+function sortIndandTraits(indexMat, traitMat; sortby = 2)
+	sorted_i, s_it = sortIndexes(indexMat, traitMat[:,sortby])
+    sorted_tr = traitMat[s_it,:]
+    return sorted_i, sorted_tr, s_it
 end
