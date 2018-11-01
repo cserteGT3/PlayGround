@@ -8,7 +8,7 @@ Currently only `Float32` is used, because the mesh type used by the packages.
 * **MeshCat** - for visualizing meshes and pointclouds - [GitHub](https://github.com/rdeits/MeshCat.jl), [demo notebook](https://github.com/rdeits/MeshCat.jl/blob/master/demo.ipynb)
 * **MeshIO, FileIO** - for loading .ply files
 * **Interact** - for easypeasy widgets - [doc](https://juliagizmos.github.io/Interact.jl/latest/)
-* **CoordinaTransformations** - for obvious reasons - [GitHub](https://github.com/FugroRoames/CoordinateTransformations.jl)
+* **CoordinateTransformations** - for obvious reasons - [GitHub](https://github.com/FugroRoames/CoordinateTransformations.jl)
 * **StaticArrays** - for fast arrays and matrices - [GitHub](https://github.com/JuliaArrays/StaticArrays.jl), [doc](http://juliaarrays.github.io/StaticArrays.jl/stable/)
 * **Colors** - for visualizing different pointclouds - [doc](http://juliagraphics.github.io/Colors.jl/stable/), [named colors](http://juliagraphics.github.io/Colors.jl/stable/namedcolors.html)
 * **NearestNeighbors** - for k-d tree - [GitHub](https://github.com/KristofferC/NearestNeighbors.jl)
@@ -41,3 +41,4 @@ This repository is edited on Windows. Therefore my git client handles the line e
 - [ ] Add `@inbounds` and `@inlined` macro
 - [ ] Proper `AssertionError` messages
 - [ ] Index based ICP instead of copying
+- [ ] Inherit array's element type 
