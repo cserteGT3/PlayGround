@@ -60,7 +60,7 @@ function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
     vts = Array{VertexType}(undef, vl)
     fcs = FaceType[]
     for i in 1:vl
-        vts[i] = convert(Point3f0, vtarray[i,:])
+        vts[i] = convert(Point3f0, vtarray[i,1:3])
     end
     return MeshType(vts, fcs)
 end
@@ -173,7 +173,7 @@ true
 ```
 """
 function createKnnPairArray(toPair, kdTree; fltype = Float32)
-    pid, pdx = knn(kdTree,toPair,1)
+    pid, pdx = knn(kdTree,toPair,1, false)
     p_nums = size(pid,1)
 	pid_VA = VectorOfArray(pid)
     pdx_VA = VectorOfArray(pdx)
@@ -293,3 +293,50 @@ function sortIndandTraits(indexMat, traitMat; sortby = 2)
     sorted_tr = traitMat[s_it,:]
     return sorted_i, sorted_tr, s_it
 end
+
+"""
+    convert2HomCoordMatrix(toHArray, fltype = Float32)
+
+Convert an array of points to matrix of homogeneous points.
+"""
+function convert2HomCoordMatrix(toHArray, fltype = Float32)
+    hom_arr = ones(fltype,size(toHArray,1),4)
+    vaoa = VectorOfArray(toHArray)
+    hom_arr[:,1:3] = convert(Array,vaoa)'
+    return hom_arr
+end
+
+"""
+    randomSampleIndexes(percent, l::Number)
+
+Sample `percent`% random indexes, where `l` can be the largest index.
+"""
+function randomSampleIndexes(percent, l::Number)
+    @assert 1 <= percent && percent <= 100 "The percent should be: 1 <= prc <= 100."
+    numofsample = floor(Int,l*percent/100)
+    @assert numofsample > 0 "$numofsample index is choosed. Edit the percent!"
+    sampled_array = Array{Int}(undef,numofsample)
+    self_avoid_sample!(1:l,sampled_array)
+    return sampled_array
+end
+
+"""
+    randomSampleIndexes(percent, array, dim = 1)
+
+Can be applied to arrays, where `dim` sepcifies the dimension along the maximum index counted.
+
+Falls back to `randomSampleIndexes(percent, l::Number)`.
+"""
+function randomSampleIndexes(percent, array, dim = 1)
+    @assert dim <= ndims(array) "dim is larger than the array's dimensions. This doesn't makes sense at all..."
+    return randomSampleIndexes(percent, size(array,dim))
+end
+
+"""
+    giveTranspose(A)
+
+Wrapper for `transpose()`.
+"""
+function giveTranspose(A)
+    return transpose!(Array{eltype(A)}(undef, size(A, 2), size(A, 1)), A)
+end    
