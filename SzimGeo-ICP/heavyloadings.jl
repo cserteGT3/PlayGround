@@ -8,7 +8,7 @@ import StatsBase.self_avoid_sample!
 #@info "Visualizer started: vis"
 
 if MODEL_PATH_KEY == :hPC
-	const MODEL_FOLDER = "C:\\Users\\Pista\\Google Drive\\BME-GPK\\Programok\\ICP-models"
+	const MODEL_FOLDER = "C:\\Users\\Laci\\gdrive-cstamas\\BME-GPK\\Programok\\ICP-models"
 elseif MODEL_PATH_KEY == :wNB
 	const MODEL_FOLDER = "C:\\Users\\cstamas\\gdrive-csertegt\\BME-GPK\\Programok\\ICP-models"
 elseif MODEL_PATH_KEY == :hNB

@@ -32,7 +32,7 @@ This readme can be displayed with: `using Markdown; Markdown.parse_file("README.
 
 And here's a help for [Github Markdown](https://guides.github.com/features/mastering-markdown/)
 
-This repository is edited on Windows. Therefore my git client handles the line endings.
+This repository is edited on Windows. Therefore my git client handles the line endings (Checkout Windows-style, commit Unix-style lin endings).
 
 ### TODOs:
 - [x] Remove Random pkg if not needed
