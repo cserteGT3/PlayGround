@@ -49,18 +49,18 @@ end
 """
     makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
 
-Convert matrix (with size: n×3) to mesh.
+Convert matrix (with size: 3×n) to mesh.
 
 Only vertices can be set.
 """
 function makeMeshfromMatrix(vtarray, MeshType = GLNormalMesh)
-    vl = size(vtarray, 1)
+    vl = size(vtarray, 2)
     VertexType = vertextype(MeshType)
     FaceType = facetype(MeshType)
     vts = Array{VertexType}(undef, vl)
     fcs = FaceType[]
     for i in 1:vl
-        vts[i] = convert(Point3f0, vtarray[i,1:3])
+        vts[i] = convert(Point3f0, vtarray[1:3,i])
     end
     return MeshType(vts, fcs)
 end
