@@ -41,4 +41,4 @@ This repository is edited on Windows. Therefore my git client handles the line e
 - [ ] Add `@inbounds` and `@inlined` macro
 - [ ] Proper `AssertionError` messages
 - [ ] Index based ICP instead of copying
-- [ ] Inherit array's element type 
+- [ ] Inherit array's type, size, element type
