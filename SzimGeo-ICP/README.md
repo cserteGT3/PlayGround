@@ -42,3 +42,4 @@ This repository is edited on Windows. Therefore my git client handles the line e
 - [ ] Proper `AssertionError` messages
 - [ ] Index based ICP instead of copying
 - [ ] Inherit array's type, size, element type
+- [ ] Check if @view makes sense here 
