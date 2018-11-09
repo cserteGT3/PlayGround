@@ -1,4 +1,5 @@
 #create GUI to update the bunny's position
+#=
 bunnyVec = MVector(0.0,0.0,0.0);
 
 function updBT(key,val)
@@ -21,7 +22,7 @@ sliz = slider(sliderRange,label="z axis",value=0);
 on(n -> updBT(:x,n),slix);
 on(n -> updBT(:y,n),sliy);
 on(n -> updBT(:z,n),sliz);
-
+=#
 #trGui = vbox(slix,sliy,sliz);
 
 #Real ICP things
@@ -217,18 +218,18 @@ end
 
 Chop `prc`% of the end of array or matrix.
 """
-function chopEndOfArray(prc, array::Array{T,1}) where T<:Number
+function chopEndOfArray(prc, array::AbstractArray{T,1}) where T<:Number
     @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
     issi = size(array,1)
     numofsample = issi-floor(Int,issi*prc/100)
-    return array[1:numofsample]
+    return @view array[1:numofsample]
 end
 
-function chopEndOfArray(prc, array::Array{T,2}) where T<:Number
+function chopEndOfArray(prc, array::AbstractArray{T,2}) where T<:Number
     @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
     issi = size(array,1)
     numofsample = issi-floor(Int,issi*prc/100)
-    return array[1:numofsample,:]
+    return @view array[1:numofsample,:]
 end
 
 """
@@ -339,4 +340,16 @@ Wrapper for `transpose()`.
 """
 function giveTranspose(A)
     return transpose!(Array{eltype(A)}(undef, size(A, 2), size(A, 1)), A)
+end
+
+"""
+    makeMatrixFromMesh(toMatrix, fltype = Float32)
+
+Convert an array of points to matrix, with size n×3.
+"""
+function makeMatrixFromMesh(toMatrix, fltype = Float32)
+    hom_arr = ones(fltype,size(toMatrix,1),3)
+    vaoa = VectorOfArray(toMatrix)
+    hom_arr[:,1:3] = convert(Array,vaoa)'
+    return hom_arr
 end    
