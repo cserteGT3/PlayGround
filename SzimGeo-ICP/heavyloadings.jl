@@ -1,5 +1,6 @@
 using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Colors
 using GeometryTypes, NearestNeighbors, RecursiveArrayTools, Distances, BenchmarkTools
+using Rotations
 using Logging, LinearAlgebra, Random
 import MeshCat: vertices
 import GeometryTypes: Point3f0

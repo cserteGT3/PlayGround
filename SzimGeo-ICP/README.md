@@ -17,10 +17,11 @@ Currently only `Float32` is used, because the mesh type used by the packages.
 * **StatsBase** - for random sampling - [doc](http://juliastats.github.io/StatsBase.jl/stable/)
 * **BenchmarkTools** - for benchmarking - [GitHub](https://github.com/JuliaCI/BenchmarkTools.jl), [intro](https://github.com/JuliaCI/BenchmarkTools.jl/blob/master/doc/manual.md)
 * **RecursiveArrayTools** - instead of `vcat(A...)` - [GitHub](https://github.com/JuliaDiffEq/RecursiveArrayTools.jl), [StackOverflow issue](https://stackoverflow.com/questions/47021821/julia-flattening-array-of-array-tuples)
+* **Rotations** - for easy rotation matrixes - [GitHub](https://github.com/FugroRoames/CoordinateTransformations.jl)
 
 For a little help:
 
-`add MeshCat FileIO MeshIO Interact CoordinateTransformations StaticArrays Colors Distances NearestNeighbors GeometryTypes StatsBase BenchmarkTools RecursiveArrayTools`
+`add MeshCat FileIO MeshIO Interact Rotations CoordinateTransformations StaticArrays Colors Distances NearestNeighbors GeometryTypes StatsBase BenchmarkTools RecursiveArrayTools`
 
 ## Used packages that are part of Julia's stdlib
 * **Logging** - instead of `println()`
