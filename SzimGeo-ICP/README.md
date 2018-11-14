@@ -5,7 +5,7 @@ Currently only `Float32` is used, because the mesh type used by the packages.
 
 ## Used packages
 * **IJulia** - for the Jupyter IDE
-* **MeshCat** - for visualizing meshes and pointclouds - [GitHub](https://github.com/rdeits/MeshCat.jl), [demo notebook](https://github.com/rdeits/MeshCat.jl/blob/master/demo.ipynb)
+* **MeshCat** - for visualizing meshes and pointclouds - [GitHub](https://github.com/rdeits/MeshCat.jl), [demo notebook](https://github.com/rdeits/MeshCat.jl/blob/master/demo.ipynb), [animation demo](https://github.com/rdeits/MeshCat.jl/blob/master/animation.ipynb)
 * **MeshIO, FileIO** - for loading .ply files
 * **Interact** - for easypeasy widgets - [doc](https://juliagizmos.github.io/Interact.jl/latest/)
 * **CoordinateTransformations** - for obvious reasons - [GitHub](https://github.com/FugroRoames/CoordinateTransformations.jl)
