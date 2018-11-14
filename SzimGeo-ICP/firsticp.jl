@@ -139,8 +139,6 @@ function createKnnPairArray(toPair, kdTree; fltype = Float32)
     return indexer_Int, pair_traits_Float
 end
 
-
-
 """
     allEqual(x)
 
@@ -183,7 +181,7 @@ function chopEndOfArray(prc, tupi...)
     @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
     ret = ()
     for i in 1:length(tupi)
-        ret = (ret...,chopEndOfArray(prc,tupi[i]))
+		ret = (ret...,chopEndOfArray(prc,tupi[i]))
     end
     return ret
 end
@@ -259,20 +257,20 @@ Sample `percent`% random indexes, where `l` can be the largest index.
 function randomSampleIndexes(percent, l::Number)
     @assert 1 <= percent && percent <= 100 "The percent should be: 1 <= prc <= 100."
     numofsample = floor(Int,l*percent/100)
-    @assert numofsample > 0 "$numofsample index is choosed. Edit the percent!"
+    @error numofsample > 0 "$numofsample index is choosed. Edit the percent!"
     sampled_array = Array{Int}(undef,numofsample)
     self_avoid_sample!(1:l,sampled_array)
     return sampled_array
 end
 
 """
-    randomSampleIndexes(percent, array, dim = 1)
+    randomSampleIndexes(percent, array, dim)
 
-Can be applied to arrays, where `dim` sepcifies the dimension along the maximum index counted.
+Can be applied to arrays, where `dim` sepcifies the dimension along the largest index counted.
 
 Falls back to `randomSampleIndexes(percent, l::Number)`.
 """
-function randomSampleIndexes(percent, array, dim = 1)
+function randomSampleIndexes(percent, array, dim)
     @assert dim <= ndims(array) "dim is larger than the array's dimensions. This doesn't makes sense at all..."
     return randomSampleIndexes(percent, size(array,dim))
 end
@@ -284,4 +282,72 @@ Wrapper for `transpose()`.
 """
 function giveTranspose(A)
     return transpose!(Array{eltype(A)}(undef, size(A, 2), size(A, 1)), A)
-end  
+end
+
+"""
+    CoM(arr, vdim)
+
+Compute the center of mass.
+
+`dim` tells, in which direction is one vector in the matrix.
+"""
+function CoM(arr, vdim)
+    @assert ndims(arr) == 2 "This function can only handle matrixes."
+    com_size = size(arr,vdim)
+    l_dir = vdim == 1 ? 2 : 1
+    mu = similar(arr,com_size)
+    if l_dir == 1
+        for i in 1:com_size
+            p = @view arr[:,i]
+            mu[i] = sum(p)
+        end
+    elseif l_dir == 2
+         for i in 1:com_size
+            p = @view arr[i,:]
+            mu[i] = sum(p)
+        end
+    end
+    return mu/size(arr,l_dir)
+end
+
+"""
+    crosscovMat(readvec, refvec)
+
+Compute the cross-covariance matrix.
+"""
+function crosscovMat(readvec, refvec)
+    @assert size(readvec) == size(refvec) "Arrays should have the same size."
+    l = size(refvec,2)
+    sigm = readvec*refvec'
+    sigm = sigm/l - CoM(readvec,1)*CoM(refvec,1)'
+    return sigm
+end
+
+"""
+    crosscovMat(readvec, refvec, mu_read, mu_ref)
+
+Center of mass vectors can be provided.
+"""
+function crosscovMat(readvec, refvec, mu_read, mu_ref)
+    @assert size(readvec) == size(refvec) "Arrays should have the same size."
+    l = size(refvec,2)
+    sigm = readvec*refvec'
+    sigm = sigm/l - mu_read*mu_ref'
+    return sigm
+end
+
+"""
+    bestRotMat(sigma)
+
+Compute the best rotation matrix, based on the cross-covariance matrix.
+"""
+function bestRotMat(sigma)
+    deltaV(m) = [m[2,3]-m[3,2], m[3,1]-m[1,3], m[1,2]-m[2,1]]
+    Δ = deltaV(sigma)
+    Qmat = vcat(hcat(tr(sigma),Δ'),hcat(Δ,sigma+sigma'-tr(sigma)*Matrix{eltype(sigma)}(I,3,3)))
+    qr = eigen(Qmat).vectors[:,end]
+    R = [qr[1]^2+qr[2]^2-qr[3]^2-qr[4]^2 2(qr[2]*qr[3]-qr[1]*qr[4]) 2(qr[2]*qr[4]+qr[1]*qr[3])
+     2(qr[2]*qr[3]+qr[1]*qr[4]) qr[1]^2+qr[3]^2-qr[2]^2-qr[4]^2 2(qr[3]*qr[4]-qr[1]*qr[2])
+     2(qr[2]*qr[4]-qr[1]*qr[3]) 2(qr[3]*qr[4]+qr[1]*qr[2]) qr[1]^2+qr[4]^2-qr[2]^2-qr[3]^2]
+    return R
+end
