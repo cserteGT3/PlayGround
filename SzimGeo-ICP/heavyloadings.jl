@@ -1,4 +1,4 @@
-using MeshCat, FileIO, Interact, CoordinateTransformations, StaticArrays, Colors
+using MeshCat, FileIO, CoordinateTransformations, StaticArrays, Colors
 using GeometryTypes, NearestNeighbors, RecursiveArrayTools, Distances, BenchmarkTools
 using Rotations
 using Logging, LinearAlgebra, Random
