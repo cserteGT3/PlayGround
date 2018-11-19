@@ -4,7 +4,7 @@ using Rotations
 using Logging, LinearAlgebra, Random
 import MeshCat: vertices
 import GeometryTypes: Point3f0
-import StatsBase.self_avoid_sample!
+import StatsBase.self_avoid_sample!, StatsBase.mean_and_std
 
 if MODEL_PATH_KEY == :hPC
 	const MODEL_FOLDER = "C:\\Users\\Laci\\gdrive-cstamas\\BME-GPK\\Programok\\ICP-models"

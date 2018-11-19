@@ -101,12 +101,12 @@ function scaleMesh(sourceMesh, scale; MeshType = GLNormalMesh)
 end
 
 """
-    createKnnPairArray(toPair, kdTree; fltype = Float32)
+    createKnnPairArray(toPair, indexes, kdTree; fltype = Float32)
 
 Pair an array of points to their nearest point in the kdTree.
 
 Return values are two matrixes, the first contains
-the indexes of the kd treed and  the `toPair` array.
+the indexes of the kd treed array and the `indexes` indexer array.
 Second matrix contains a weight vector, and an array containing the distances.
 
 # Examples
@@ -118,22 +118,22 @@ Using with a reference array `ref_array`, and a sampled `read_array`.
 ```julia-repl
 julia> kdtree_ref = KDTree(ref_array);
 julia> indexM, traitM = createKnnPairArray(read_array, kdtree_ref);
-julia> inds = 1:10;
-julia> dist1 = euclidean.(ref_array[indexM[inds,1]],read_array[indexM[inds,2]]);
-julia> dist2 = traitM[indexM[inds,2],2];
+julia> inds = 1;
+julia> dist1 = euclidean(ref_array[:,indexM[inds,1]],read_array[:,indexM[inds,2]]);
+julia> dist2 = traitM[inds,2];
 julia> dist1 == dist2
 true
 ```
 """
-function createKnnPairArray(toPair, kdTree; fltype = Float32)
-    pid, pdx = knn(kdTree,toPair,1, false)
+function createKnnPairArray(toPair, indexes, kdTree; fltype = Float32)
+    pid, pdx = knn(kdTree,toPair[:,indexes],1, false)
     p_nums = size(pid,1)
 	pid_VA = VectorOfArray(pid)
     pdx_VA = VectorOfArray(pdx)
     pair_traits_Float = Array{fltype}(undef,p_nums,2)
     indexer_Int = Array{Int}(undef,p_nums,2)
     indexer_Int[:,1] = convert(Array,pid_VA)'
-    indexer_Int[:,2] = collect(1:p_nums)
+    indexer_Int[:,2] = indexes
     pair_traits_Float[:,1] = fill(1,p_nums)
     pair_traits_Float[:,2] = convert(Array,pdx_VA)'
     return indexer_Int, pair_traits_Float
@@ -159,14 +159,14 @@ end
 Chop `prc`% of the end of array or matrix.
 """
 function chopEndOfArray(prc, array::AbstractArray{T,1}) where T<:Number
-    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
+    @assert 0 <= prc && prc < 100 "The percent should be: 0 <= prc < 100."
     issi = size(array,1)
     numofsample = issi-floor(Int,issi*prc/100)
     return @view array[1:numofsample]
 end
 
 function chopEndOfArray(prc, array::AbstractArray{T,2}) where T<:Number
-    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
+    @assert 0 <= prc && prc < 100 "The percent should be: 0 <= prc < 100."
     issi = size(array,1)
     numofsample = issi-floor(Int,issi*prc/100)
     return @view array[1:numofsample,:]
@@ -178,7 +178,7 @@ end
 Can be applied to any number of arrays, matrixes.
 """
 function chopEndOfArray(prc, tupi...)
-    @assert 1 <= prc && prc < 100 "The percent should be: 1 <= prc < 100."
+    @assert 0 <= prc && prc < 100 "The percent should be: 0 <= prc < 100."
     ret = ()
     for i in 1:length(tupi)
 		ret = (ret...,chopEndOfArray(prc,tupi[i]))
@@ -197,42 +197,6 @@ function sortIndexes(indM, dist_array)
     s_it = sortperm(dist_array)
     sorted_i = indM[s_it,:]
     return sorted_i, s_it
-end
-
-"""
-    sortIndandTraits(indexMat, traitMat; sortby = 2)
-
-Sort index and trait matrix by the distances in the trait matrix.
-
-Return the sorted index and trait matrix, and also the permutation array.
-
-# Arguments
-- `sortby = 2`: selects the trait matrix's column to sort by.
-
-# Examples
-
-This example shows how to acces the the trait matrix's elements.
-`indM` is an indexer matrix and the second column of `traitM`
-contains the distances to sort by.
-`indM` contains the indexes that pairs `ref_array` and `read_array`.
-`euclidean()` is a function from `Distances` package.
-
-```julia-repl
-julia> s_indM, s_traitM, s_it = sortIndandTraits(indM, traitM);
-julia> inds = 1:10;
-julia> dist1 = euclidean.(ref_array[s_indM[inds,1]],read_array[s_indM[inds,2]]);
-julia> dist2 = s_traitM[inds,2];
-julia> ds_ind = sortperm(s_it);
-julia> dist3 = s_traitM[ds_ind[s_indM[inds,2]],2];
-julia> dist4 = traitM[s_indM[inds,2],2];
-julia> dist1 == dist2 == dist3 == dist4
-true
-```
-"""
-function sortIndandTraits(indexMat, traitMat; sortby = 2)
-	sorted_i, s_it = sortIndexes(indexMat, traitMat[:,sortby])
-    sorted_tr = traitMat[s_it,:]
-    return sorted_i, sorted_tr, s_it
 end
 
 """
@@ -257,7 +221,7 @@ Sample `percent`% random indexes, where `l` can be the largest index.
 function randomSampleIndexes(percent, l::Number)
     @assert 1 <= percent && percent <= 100 "The percent should be: 1 <= prc <= 100."
     numofsample = floor(Int,l*percent/100)
-    @error numofsample > 0 "$numofsample index is choosed. Edit the percent!"
+    @assert numofsample > 0 "$numofsample index is choosed. Edit the percent!"
     sampled_array = Array{Int}(undef,numofsample)
     self_avoid_sample!(1:l,sampled_array)
     return sampled_array
@@ -350,4 +314,129 @@ function bestRotMat(sigma)
      2(qr[2]*qr[3]+qr[1]*qr[4]) qr[1]^2+qr[3]^2-qr[2]^2-qr[4]^2 2(qr[3]*qr[4]-qr[1]*qr[2])
      2(qr[2]*qr[4]-qr[1]*qr[3]) 2(qr[3]*qr[4]+qr[1]*qr[2]) qr[1]^2+qr[4]^2-qr[2]^2-qr[3]^2]
     return R
+end
+
+"""
+    initICP(mesh1, mesh2, ftyp = Float32)
+
+Make initial arrays and kd tree for ICP.
+
+Return the vertices of the two mesh (in a homogeneous coordinate matrix)
+and the kd tree of the first mesh.
+"""
+function initICP(mesh1, mesh2, ftyp = Float32)
+    a1 = convert2HomCoordMatrix(vertices(mesh1), ftyp)
+    a2 = convert2HomCoordMatrix(vertices(mesh2), ftyp)
+    k1 = KDTree(a1)
+    return a1, a2, k1
+end
+
+"""
+    resettransform!(wat)
+
+
+Reset the transformation of the given object!
+"""
+resettransform!(wat) = settransform!(wat,AffineMap([1 0 0;0 1 0;0 0 1],[0,0,0]))
+
+"""
+    rejectWorst(pc, iM, tM, fAv, dAv)
+
+Reject the worst `pc` percent of the pairs.
+
+Return with `SubArrays`.
+
+# Arguments
+- `iM`: index matrix (result of `createKnnPairArray()`).
+- `tM`: trait matrix (result of `createKnnPairArray()`).
+- `fAv`, `dAv`: referenc and reading arrays.
+"""
+function rejectWorst(pc, iM, tM, fAv, dAv)
+    dA =  @view tM[:,2]
+    siM, sind = sortIndexes(iM, dA)
+    chI, chit = chopEndOfArray(pc, siM, sind)
+    fVv = @view fAv[1:3,chI[:,1]]
+    dVv = @view dAv[1:3,chI[:,2]]
+    return fVv, dVv
+end
+
+
+"""
+    rejectWorst(pc, iM, tM)
+
+Can generate the indexers only.
+
+"""
+function rejectWorst(pc, iM, tM)
+    dA =  @view tM[:,2]
+    siM, sind = sortIndexes(iM, dA)
+    chI, chit = chopEndOfArray(pc, siM, sind)
+    reffI = @view chI[:,1]
+    readdI = @view chI[:,2]
+    return reffI, readdI
+end
+
+"""
+    postProcDict(d) -> (iterA, timeA, hmD, errA)
+
+Process the returned dictionary.
+
+Yields two time array in usec and msec (first is the length of every iteration,
+second is the absolute time), a dictionary of transformation matrixes
+and the error array.
+"""
+function postProcDict(d)
+    l = length(d)
+    @assert l > 0 "Why would you do that to an empty dictionary?"
+    #bemenet: (time_ns(),hM,errD)
+    #kimenet: time μs tömbben, hm-ek egy dict-ben, err egy tömbben
+    tN = 1
+    hmN = 2
+    erN = 3
+    t_arr = zeros(l-1)
+	t2 = zeros(l)
+    erA = Array{typeof(d[1][erN])}(undef,l)
+    mD = Dict{Int,typeof(d[1][hmN])}()
+    for i in 1:l-1
+        intD = d[i+1][tN] - d[i][tN]
+        t_arr[i] = intD/1000 # nanosec -> microsec
+		t2[i+1] = (d[i+1][tN]- d[1][tN])/1000000
+        mD[i] = d[i][hmN]
+        erA[i] = d[i][erN]
+    end
+    mD[l] = d[l][hmN]
+    erA[l] = d[l][erN]
+    return t_arr, t2, mD, erA
+end
+
+"""
+    sumcumHM(d)
+
+Accumulate the homogeneous transformation matrix into one matrix.
+"""
+function sumcumHM(d)
+    @assert length(d) > 0 "Why would you do that to an empty dictionary?"
+    ret = d[1]
+    for i in 2:length(d)
+        ret = d[i] * ret
+    end
+    return ret
+end
+
+"""
+    reject25Sigma(iM, tM) -> (refI, redI)
+
+Reject the pairs, that are out of the mean+-2.5σ range.
+
+Return with the view of the index matrix.
+"""
+function reject25Sigma(iM, tM)
+    dA = @view tM[:,2]
+    mA, stdA = mean_and_std(dA)
+    mixx = mA-2.5*stdA
+    maxx = mA+2.5*stdA
+    bI = [mixx <= val <= maxx ? true : false for (_,val) in enumerate(dA)]
+    rejiRef = @view iM[bI,1]
+    rejiRed = @view iM[bI,2]
+    return rejiRef, rejiRed
 end
