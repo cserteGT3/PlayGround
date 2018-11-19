@@ -1,21 +1,20 @@
 include("firsticp.jl")
 
 """
-Easiest. Rejetc worst percent.
+Easiest. Reject worst percent.
 """
 function iterateEasyPeasy(aRef, aRed, kdRef, it, samp, rej)
     homTrDict = Dict{Int,Tuple}()
     # Calc the 0-th element of the dict for benchmark
-    ri = randomSampleIndexes(samp,aRef,2)
+    maxsamp = min(size(aRef,2),size(aRed,2))
+	ri = randomSampleIndexes(samp,maxsamp)
     indM, trM = createKnnPairArray(aRed, ri, kdRef)
-    #sort about distance and reject the worst
-    refI, redI = rejectWorst(rej, indM, trM)
-    refV = @view aRef[1:3,refI]
-    redV = @view aRed[1:3,redI]
+    refV = @view aRef[1:3,indM[:,1]]
+    redV = @view aRed[1:3,indM[:,2]]
     errD = sum(colwise(SqEuclidean(),refV,redV))
     homTrDict[1] = (time_ns(),Matrix{eltype(aRef)}(I,4,4),errD)
     for i in 1:it
-        ri = randomSampleIndexes(samp,aRef,2)
+        ri = randomSampleIndexes(samp,maxsamp)
         indM, trM = createKnnPairArray(aRed, ri, kdRef)
         #sort about distance and reject the worst
         refI, redI = rejectWorst(rej, indM, trM)
@@ -50,16 +49,15 @@ Second easiest. Rejection based on std.
 function iterateSigmaRej(aRef, aRed, kdRef, it, samp)
     homTrDict = Dict{Int,Tuple}()
     # Calc the 0-th element of the dict for benchmark
-    ri = randomSampleIndexes(samp,aRef,2)
+	maxsamp = min(size(aRef,2),size(aRed,2))
+    ri = randomSampleIndexes(samp,maxsamp)
     indM, trM = createKnnPairArray(aRed, ri, kdRef)
-    #rejection with the std
-    refI, redI = reject25Sigma(indM, trM)
-    refV = @view aRef[1:3,refI]
-    redV = @view aRed[1:3,redI]
+    refV = @view aRef[1:3,indM[:,1]]
+    redV = @view aRed[1:3,indM[:,2]]
     errD = sum(colwise(SqEuclidean(),refV,redV))
     homTrDict[1] = (time_ns(),Matrix{eltype(aRef)}(I,4,4),errD)
     for i in 1:it
-        ri = randomSampleIndexes(samp,aRef,2)
+        ri = randomSampleIndexes(samp,maxsamp)
         indM, trM = createKnnPairArray(aRed, ri, kdRef)
         #sort about distance and reject the worst
         refI, redI = reject25Sigma(indM, trM)
