@@ -28,22 +28,22 @@ function iterateEasyPeasy(aRef, aRed, kdRef, itmax, samp, rej, errmax)
         hM  = [rM bTr ; 0 0 0 1]
         aRed = hM*aRed
         redV = @view aRed[1:3,redI]
-        errD = sum(colwise(SqEuclidean(),refV,redV))
+        errD = sum(colwise(SqEuclidean(),refV,redV))/size(refV,2)
         homTrDict[i+1] = (time_ns(),hM,errD)
 		if errD < errmax
-			@info "Finished with error: $errD, at threshold: $errmax, at the $i iteration"
 			break
 		end
     end
+	@info "Finished with error: $(homTrDict[length(homTrDict)][3]), at threshold: $errmax, at the $(length(homTrDict)-1)th iteration"
     return homTrDict
 end
 
 """
-    wrapICP1(rfpc,redpc, ftype = Float32; itMax= 1000, sampPC = 10, rejPC = 20, errMax = 0.5)
+    wrapICP1(rfpc,redpc, ftype = Float32; itMax= 1000, sampPC = 10, rejPC = 20, errMax = 0.0001)
 
 Wrapper for the easiest.
 """
-function wrapICP1(rfpc,redpc, ftype = Float32; itMax= 1000, sampPC = 10, rejPC = 20, errMax = 0.5)
+function wrapICP1(rfpc,redpc, ftype = Float32; itMax= 1000, sampPC = 10, rejPC = 20, errMax = 0.0001)
     refA, redA, kd_ref = initICP(rfpc, redpc, ftype)
     retD = iterateEasyPeasy(refA, redA, kd_ref, itMax, sampPC, rejPC, errMax)
     return retD
