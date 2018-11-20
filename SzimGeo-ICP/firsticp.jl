@@ -440,3 +440,16 @@ function reject25Sigma(iM, tM)
     rejiRed = @view iM[bI,2]
     return rejiRef, rejiRed
 end
+
+"""
+    transformMesh(mesh, trM)
+
+Transform the mesh with the given homogeneous matrix.
+
+Returns a new object.
+"""
+function transformMesh(mesh, trM)
+    vs = convert2HomCoordMatrix(vertices(mesh))
+    vn = trM * vs
+    return makeMeshfromMatrix(vn)
+end

@@ -3,7 +3,7 @@ include("firsticp.jl")
 """
 Easiest. Reject worst percent.
 """
-function iterateEasyPeasy(aRef, aRed, kdRef, it, samp, rej)
+function iterateEasyPeasy(aRef, aRed, kdRef, itmax, samp, rej, errmax)
     homTrDict = Dict{Int,Tuple}()
     # Calc the 0-th element of the dict for benchmark
     maxsamp = min(size(aRef,2),size(aRed,2))
@@ -13,7 +13,7 @@ function iterateEasyPeasy(aRef, aRed, kdRef, it, samp, rej)
     redV = @view aRed[1:3,indM[:,2]]
     errD = sum(colwise(SqEuclidean(),refV,redV))
     homTrDict[1] = (time_ns(),Matrix{eltype(aRef)}(I,4,4),errD)
-    for i in 1:it
+    for i in 1:itmax
         ri = randomSampleIndexes(samp,maxsamp)
         indM, trM = createKnnPairArray(aRed, ri, kdRef)
         #sort about distance and reject the worst
@@ -30,23 +30,29 @@ function iterateEasyPeasy(aRef, aRed, kdRef, it, samp, rej)
         redV = @view aRed[1:3,redI]
         errD = sum(colwise(SqEuclidean(),refV,redV))
         homTrDict[i+1] = (time_ns(),hM,errD)
+		if errD < errmax
+			@info "Finished with error: $errD, at threshold: $errmax, at the $i iteration"
+			break
+		end
     end
     return homTrDict
 end
 
 """
+    wrapICP1(rfpc,redpc, ftype = Float32; itMax= 1000, sampPC = 10, rejPC = 20, errMax = 0.5)
+
 Wrapper for the easiest.
 """
-function wrapICP1(rfpc,redpc, ftype = Float32; itNum = 10, sampPC = 50, rejPC = 20)
+function wrapICP1(rfpc,redpc, ftype = Float32; itMax= 1000, sampPC = 10, rejPC = 20, errMax = 0.5)
     refA, redA, kd_ref = initICP(rfpc, redpc, ftype)
-    retD = iterateEasyPeasy(refA, redA, kd_ref, itNum, sampPC, rejPC)
+    retD = iterateEasyPeasy(refA, redA, kd_ref, itMax, sampPC, rejPC, errMax)
     return retD
 end
 
 """
 Second easiest. Rejection based on std.
 """
-function iterateSigmaRej(aRef, aRed, kdRef, it, samp)
+function iterateSigmaRej(aRef, aRed, kdRef, itmax, samp, errmax)
     homTrDict = Dict{Int,Tuple}()
     # Calc the 0-th element of the dict for benchmark
 	maxsamp = min(size(aRef,2),size(aRed,2))
@@ -56,7 +62,7 @@ function iterateSigmaRej(aRef, aRed, kdRef, it, samp)
     redV = @view aRed[1:3,indM[:,2]]
     errD = sum(colwise(SqEuclidean(),refV,redV))
     homTrDict[1] = (time_ns(),Matrix{eltype(aRef)}(I,4,4),errD)
-    for i in 1:it
+    for i in 1:itmax
         ri = randomSampleIndexes(samp,maxsamp)
         indM, trM = createKnnPairArray(aRed, ri, kdRef)
         #sort about distance and reject the worst
@@ -71,18 +77,24 @@ function iterateSigmaRej(aRef, aRed, kdRef, it, samp)
         hM  = [rM bTr ; 0 0 0 1]
         aRed = hM*aRed
         redV = @view aRed[1:3,redI]
-        errD = sum(colwise(SqEuclidean(),refV,redV))
+        errD = sum(colwise(SqEuclidean(),refV,redV))/size(refV,2)
         homTrDict[i+1] = (time_ns(),hM,errD)
+		if errD < errmax
+			break
+		end
     end
+	@info "Finished with error: $(homTrDict[length(homTrDict)][3]), at threshold: $errmax, at the $(length(homTrDict)-1)th iteration"
     return homTrDict
 end
 
 
 """
+    wrapICP3(rfpc,redpc, ftype = Float32; itMax = 1000, sampPC = 10, errMax = 0.0001)
+
 Wrapper for the rejection based iteration.
 """
-function wrapICP3(rfpc,redpc, ftype = Float32; itNum = 10, sampPC = 50)
+function wrapICP3(rfpc,redpc, ftype = Float32; itMax = 1000, sampPC = 10, errMax = 0.0001)
     refA, redA, kd_ref = initICP(rfpc, redpc, ftype)
-    retD = iterateSigmaRej(refA, redA, kd_ref, itNum, sampPC)
+    retD = iterateSigmaRej(refA, redA, kd_ref, itMax, sampPC, errMax)
     return retD
 end
