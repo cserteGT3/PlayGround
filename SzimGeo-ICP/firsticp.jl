@@ -381,7 +381,7 @@ end
 
 Process the returned dictionary.
 
-Yields two time array in usec and msec (first is the length of every iteration,
+Yields two time array in msec and msec (first is the length of every iteration,
 second is the absolute time), a dictionary of transformation matrixes
 and the error array.
 """
@@ -399,7 +399,7 @@ function postProcDict(d)
     mD = Dict{Int,typeof(d[1][hmN])}()
     for i in 1:l-1
         intD = d[i+1][tN] - d[i][tN]
-        t_arr[i] = intD/1000 # nanosec -> microsec
+        t_arr[i] = intD/1000000 # nanosec -> milissec
 		t2[i+1] = (d[i+1][tN]- d[1][tN])/1000000
         mD[i] = d[i][hmN]
         erA[i] = d[i][erN]
@@ -420,7 +420,8 @@ function sumcumHM(d)
     for i in 2:length(d)
         ret = d[i] * ret
     end
-    return ret
+	mtr = AffineMap(ret[1:3,1:3],ret[1:3,4]);
+    return ret, mtr
 end
 
 """

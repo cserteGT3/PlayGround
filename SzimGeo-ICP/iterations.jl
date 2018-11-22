@@ -65,7 +65,7 @@ function iterateSigmaRej(aRef, aRed, kdRef, itmax, samp, errmax)
     for i in 1:itmax
         ri = randomSampleIndexes(samp,maxsamp)
         indM, trM = createKnnPairArray(aRed, ri, kdRef)
-        #sort about distance and reject the worst
+        #reject the worst
         refI, redI = reject25Sigma(indM, trM)
         refV = @view aRef[1:3,refI]
         redV = @view aRed[1:3,redI]
