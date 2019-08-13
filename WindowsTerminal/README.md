@@ -9,3 +9,4 @@ Config file for my windows terminal.
 * `ctrl+d` closes tab
 * profiles are reordered (cmd, ubuntu, powershell, azure)
 * added julia (after cmd) - icon must be placed next to `config.json`
+* added git bash (after julia)
