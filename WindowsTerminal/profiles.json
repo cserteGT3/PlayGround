@@ -245,7 +245,7 @@
             "useAcrylic" : false
         },
         {
-            "acrylicOpacity" : 0.75,
+            "acrylicOpacity" : 1,
             "closeOnExit" : true,
             "colorScheme" : "Campbell",
             "commandline" : "cmd.exe",
