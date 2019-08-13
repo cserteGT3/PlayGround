@@ -243,7 +243,25 @@
             "startingDirectory" : "%USERPROFILE%",
             "useAcrylic" : true
         },
-				{
+		{
+            "acrylicOpacity" : 1.0,
+            "closeOnExit" : true,
+            "colorScheme" : "Campbell",
+            "commandline" : "julia.exe",
+            "cursorColor" : "#FFFFFF",
+            "cursorShape" : "bar",
+            "fontFace" : "Consolas",
+            "fontSize" : 10,
+            "guid" : "{de209bbc-6e2c-4559-aa44-1d8a8262c9d9}",
+            "historySize" : 9001,
+            "icon" : "ms-appdata:///roaming/jicon.png",
+            "name" : "julia",
+            "padding" : "0, 0, 0, 0",
+            "snapOnInput" : true,
+            "startingDirectory" : "%USERPROFILE%",
+            "useAcrylic" : false
+        },
+		{
             "acrylicOpacity" : 0.5,
             "closeOnExit" : true,
             "colorScheme" : "Campbell",
