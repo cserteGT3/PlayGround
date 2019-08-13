@@ -241,7 +241,8 @@
             "padding" : "0, 0, 0, 0",
             "snapOnInput" : true,
             "startingDirectory" : "%USERPROFILE%",
-            "useAcrylic" : false
+            "useAcrylic" : false,
+			"tabTitle" : "cmd"
         },
 		{
             "acrylicOpacity" : 1.0,
@@ -259,7 +260,8 @@
             "padding" : "0, 0, 0, 0",
             "snapOnInput" : true,
             "startingDirectory" : "%USERPROFILE%",
-            "useAcrylic" : false
+            "useAcrylic" : false,
+			"tabTitle": "Julia"
         },
 		{
             "acrylicOpacity" : 0.5,
@@ -269,7 +271,7 @@
             "cursorColor" : "#FFFFFF",
             "cursorShape" : "bar",
             "fontFace" : "Consolas",
-            "fontSize" : 10,
+            "fontSize" : 11,
             "guid" : "{4b24306b-f384-49eb-a31a-c505fedd326b}",
             "historySize" : 9001,
             "icon" : "ms-appx:///ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.png",
@@ -277,7 +279,8 @@
             "padding" : "0, 0, 0, 0",
             "snapOnInput" : true,
             "startingDirectory" : "%USERPROFILE%",
-            "useAcrylic" : false
+            "useAcrylic" : false,
+			"tabTitle": "Git Bash"
         },
 		{
             "acrylicOpacity" : 0.5,

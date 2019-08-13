@@ -10,3 +10,4 @@ Config file for my windows terminal.
 * profiles are reordered (cmd, ubuntu, powershell, azure)
 * added julia (after cmd) - icon must be placed next to `config.json`
 * added git bash (after julia)
+* add `titleBar` names
