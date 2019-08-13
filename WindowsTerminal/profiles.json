@@ -226,6 +226,42 @@
     "profiles" : 
     [
         {
+            "acrylicOpacity" : 1.0,
+            "closeOnExit" : true,
+            "colorScheme" : "Campbell",
+            "commandline" : "cmd.exe",
+            "cursorColor" : "#FFFFFF",
+            "cursorShape" : "bar",
+            "fontFace" : "Consolas",
+            "fontSize" : 10,
+            "guid" : "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+            "historySize" : 9001,
+            "icon" : "ms-appx:///ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.png",
+            "name" : "cmd",
+            "padding" : "0, 0, 0, 0",
+            "snapOnInput" : true,
+            "startingDirectory" : "%USERPROFILE%",
+            "useAcrylic" : true
+        },
+				{
+            "acrylicOpacity" : 0.5,
+            "closeOnExit" : true,
+            "colorScheme" : "Campbell",
+            "commandline" : "wsl.exe -d Ubuntu",
+            "cursorColor" : "#FFFFFF",
+            "cursorShape" : "bar",
+            "fontFace" : "Consolas",
+            "fontSize" : 10,
+            "guid" : "{2c4de342-38b7-51cf-b940-2309a097f518}",
+            "historySize" : 9001,
+            "icon" : "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+            "name" : "Ubuntu",
+            "padding" : "0, 0, 0, 0",
+            "snapOnInput" : true,
+            "startingDirectory" : "%USERPROFILE%",
+            "useAcrylic" : false
+        },
+		{
             "acrylicOpacity" : 0.5,
             "background" : "#012456",
             "closeOnExit" : true,
@@ -245,24 +281,6 @@
             "useAcrylic" : false
         },
         {
-            "acrylicOpacity" : 1.0,
-            "closeOnExit" : true,
-            "colorScheme" : "Campbell",
-            "commandline" : "cmd.exe",
-            "cursorColor" : "#FFFFFF",
-            "cursorShape" : "bar",
-            "fontFace" : "Consolas",
-            "fontSize" : 10,
-            "guid" : "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-            "historySize" : 9001,
-            "icon" : "ms-appx:///ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.png",
-            "name" : "cmd",
-            "padding" : "0, 0, 0, 0",
-            "snapOnInput" : true,
-            "startingDirectory" : "%USERPROFILE%",
-            "useAcrylic" : true
-        },
-        {
             "acrylicOpacity" : 0.85000002384185791,
             "closeOnExit" : false,
             "colorScheme" : "Solarized Dark",
@@ -280,24 +298,6 @@
             "snapOnInput" : true,
             "startingDirectory" : "%USERPROFILE%",
             "useAcrylic" : true
-        },
-        {
-            "acrylicOpacity" : 0.5,
-            "closeOnExit" : true,
-            "colorScheme" : "Campbell",
-            "commandline" : "wsl.exe -d Ubuntu",
-            "cursorColor" : "#FFFFFF",
-            "cursorShape" : "bar",
-            "fontFace" : "Consolas",
-            "fontSize" : 10,
-            "guid" : "{2c4de342-38b7-51cf-b940-2309a097f518}",
-            "historySize" : 9001,
-            "icon" : "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
-            "name" : "Ubuntu",
-            "padding" : "0, 0, 0, 0",
-            "snapOnInput" : true,
-            "startingDirectory" : "%USERPROFILE%",
-            "useAcrylic" : false
         }
     ],
     "schemes" : 

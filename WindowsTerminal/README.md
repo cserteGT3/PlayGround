@@ -7,3 +7,4 @@ Config file for my windows terminal.
 * default is cmd.exe
 * set `acrylicOpacity` to 1
 * `ctrl+d` closes tab
+* profiles are reordered (cmd, ubuntu, powershell, azure)
