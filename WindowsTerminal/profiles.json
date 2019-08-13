@@ -241,7 +241,7 @@
             "padding" : "0, 0, 0, 0",
             "snapOnInput" : true,
             "startingDirectory" : "%USERPROFILE%",
-            "useAcrylic" : true
+            "useAcrylic" : false
         },
 		{
             "acrylicOpacity" : 1.0,
