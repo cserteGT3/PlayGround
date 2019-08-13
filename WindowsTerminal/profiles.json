@@ -11,7 +11,7 @@
                 "command" : "closePane",
                 "keys" : 
                 [
-                    "ctrl+shift+w"
+                    "ctrl+d"
                 ]
             },
             {
@@ -245,7 +245,7 @@
             "useAcrylic" : false
         },
         {
-            "acrylicOpacity" : 1,
+            "acrylicOpacity" : 1.0,
             "closeOnExit" : true,
             "colorScheme" : "Campbell",
             "commandline" : "cmd.exe",
