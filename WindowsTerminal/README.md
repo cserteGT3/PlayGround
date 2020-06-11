@@ -7,7 +7,7 @@ Config file for my windows terminal.
 * default is cmd.exe
 * don't use `acrylicOpacity`
 * `ctrl+d` closes tab
-* profiles are reordered (cmd, ubuntu, powershell, azure)
+* profiles are reordered (cmd, debian, powershell, ubuntu, azure)
 * added julia (after cmd) - icon must be placed next to `config.json`
 * added git bash (after julia)
 * add `titleBar` names
