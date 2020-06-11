@@ -42,6 +42,7 @@
                 // Julia
                 "guid": "{76af37be-75cd-474d-af39-eb479c96c848}",
                 "name": "Julia",
+				"tabTitle": "Julia",
                 "commandline": "julia.exe",
 				"icon" : "ms-appdata:///roaming/jicon.png",
 				"startingDirectory" : "%USERPROFILE%",
@@ -53,18 +54,22 @@
                 // Git Bash
                 "guid": "{6151c8e6-ada6-4940-9ccb-3f483519c38d}",
                 "name": "Git Bash",
+				"tabTitle": "Git Bash",
                 "commandline" : "C:///Program Files///Git///bin///bash.exe",
 				"icon" : "ms-appx:///ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.png",
 				"startingDirectory" : "%USERPROFILE%",
 				"fontSize" : 10,
 				"cursorShape" : "vintage",
+				"suppressApplicationTitle": true,
                 "hidden": false
             },
 			{
                 "guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
                 "hidden": false,
                 "name": "Debian",
-                "source": "Windows.Terminal.Wsl"
+				"tabTitle": "Debian WSL",
+                "source": "Windows.Terminal.Wsl",
+				"suppressApplicationTitle": true
             },
             {
                 // Make changes here to the powershell.exe profile.
