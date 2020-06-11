@@ -11,6 +11,7 @@ Config file for my windows terminal.
 * added julia (after cmd) - icon must be placed next to `settings.json`
 * added git bash (after julia)
 * set `tabTitle` names
+* set `duplicateTab` command
 
 ## Resources
 

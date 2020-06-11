@@ -120,6 +120,9 @@
         { "command": { "action": "splitPane", "split": "auto", "splitMode": "duplicate" }, "keys": "alt+shift+d" },
 		
 		// Ctrl+d closes tab
-		{ "command": "closeTab", "keys": "ctrl+d" }
+		{ "command": "closeTab", "keys": "ctrl+d" },
+		
+		// Ctrl+shift+d duplicates tab
+		{ "command": "duplicateTab", "keys": "ctrl+shift+d" }
     ]
 }
