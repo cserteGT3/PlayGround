@@ -8,7 +8,7 @@ Config file for my windows terminal.
 * don't use `acrylicOpacity`
 * `ctrl+d` closes tab
 * profiles are reordered (cmd, debian, powershell, ubuntu, azure)
-* added julia (after cmd) - icon must be placed next to `config.json`
+* added julia (after cmd) - icon must be placed next to `settings.json`
 * added git bash (after julia)
 * add `titleBar` names
 
