@@ -46,7 +46,18 @@
 				"icon" : "ms-appdata:///roaming/jicon.png",
 				"startingDirectory" : "%USERPROFILE%",
 				"fontSize" : 10,
-				"cursorShape" : "underscore",
+				"cursorShape" : "vintage",
+                "hidden": false
+            },
+			{
+                // Git Bash
+                "guid": "{6151c8e6-ada6-4940-9ccb-3f483519c38d}",
+                "name": "Git Bash",
+                "commandline" : "C:///Program Files///Git///bin///bash.exe",
+				"icon" : "ms-appx:///ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.png",
+				"startingDirectory" : "%USERPROFILE%",
+				"fontSize" : 10,
+				"cursorShape" : "vintage",
                 "hidden": false
             },
 			{
