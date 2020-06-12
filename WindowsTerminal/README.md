@@ -13,6 +13,7 @@ Config file for my windows terminal.
 * set `tabTitle` names
 * set `duplicateTab` command
 * set `fontSize` to 9 for all profiles
+* hide unused profiles
 
 ## Resources
 
