@@ -12,6 +12,7 @@ Config file for my windows terminal.
 * added git bash (after julia)
 * set `tabTitle` names
 * set `duplicateTab` command
+* set `fontSize` to 9 for all profiles
 
 ## Resources
 
