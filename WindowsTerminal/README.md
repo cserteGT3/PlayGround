@@ -14,6 +14,7 @@ Config file for my windows terminal.
 * set `duplicateTab` command
 * set `fontSize` to 9 for all profiles
 * hide unused profiles
+* maximize window when launched
 
 ## Resources
 
