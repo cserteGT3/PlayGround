@@ -16,6 +16,7 @@ Config file for my windows terminal.
 * hide unused profiles
 * maximize window when launched
 * new profile for demoing git bash
+* copy and paste with ctrl+shift
 
 ## Resources
 
