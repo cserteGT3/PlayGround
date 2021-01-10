@@ -99,6 +99,19 @@
 				"fontSize" : 9,
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure"
+            },
+			{
+                // Git Bash Demo
+                "guid": "{6151c8e6-ada6-4940-9ccb-3f483519c37d}",
+                "name": "Git Bash Demo",
+				"tabTitle": "Git Bash Demo",
+                "commandline" : "C:///Program Files///Git///bin///bash.exe",
+				"icon" : "ms-appx:///ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.png",
+				"startingDirectory" : "%USERPROFILE%",
+				"fontSize" : 16,
+				"cursorShape" : "vintage",
+				"suppressApplicationTitle": true,
+                "hidden": false
             }
         ]
     },

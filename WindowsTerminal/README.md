@@ -15,6 +15,7 @@ Config file for my windows terminal.
 * set `fontSize` to 9 for all profiles
 * hide unused profiles
 * maximize window when launched
+* new profile for demoing git bash
 
 ## Resources
 
