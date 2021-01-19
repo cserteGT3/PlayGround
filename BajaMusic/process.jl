@@ -32,7 +32,8 @@ end
 function writehtml(links, endfile)
 	open(endfile, "w") do io
 		println(io, "<!DOCTYPE html>\n<html>\n<body>")
-		for l in links
+		for (i, l) in pairs(links)
+			i%5 == 1 && println(io, "<h1>#$i-$(i+4)</h1>")
 			println(io, """<p><a href="$l">$l</a></p>""")
 		end
 		println(io, "</body>\n</html>")
